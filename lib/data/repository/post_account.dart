@@ -4,8 +4,8 @@ import '../function/get_id.dart';
 
 createAccount(String userName, String email, String password) async {
   http.post(Uri.parse(
-      'https://smartcartapp.azurewebsites.net/[AccountController]/CreateAccount?userName=$userName&email=$email&password=$password'));
-  getid(email);
+      'https://d177-41-233-251-41.eu.ngrok.io/CreateAccount?userName=$userName&password=$password&email=$email'));
+  //getid(email);
   // print(response.body);
   // print(response.statusCode);
   // if (response.statusCode == 200) {
