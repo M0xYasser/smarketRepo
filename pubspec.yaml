@@ -29,6 +29,7 @@ dependencies:
   pdf: ^3.9.0
   pin_code_fields: ^7.4.0
   qr_code_scanner: ^1.0.1
+  shared_preferences: ^2.0.20
   universal_html: ^2.0.8
   url_launcher: ^6.1.9
 

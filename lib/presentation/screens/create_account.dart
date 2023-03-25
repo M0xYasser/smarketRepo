@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../data/models/get_create_account.dart';
 import '../../data/repository/post_account.dart';
 import '../widgets/background.dart';
 
@@ -202,12 +203,16 @@ class _CreateAccount extends State<CreateAccount> {
                     color: const Color(0xff2c6976),
                   ),
                   child: MaterialButton(
-                      onPressed: () {
-                        createAccount(
+                      onPressed: () async {
+                        GetCreateAccount data = await createAccount(
                           usernameController.text.toString(),
                           emailController.text.toString(),
                           passwordController.text.toString(),
                         );
+                        var username = data.userName;
+                        var email = data.email;
+                        var password = data.password;
+                        var id = data.id;
                       },
                       child: Row(
                         children: const [
