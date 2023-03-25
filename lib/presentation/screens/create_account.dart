@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/models/get_create_account.dart';
 import '../../data/repository/post_account.dart';
@@ -10,6 +11,21 @@ class CreateAccount extends StatefulWidget {
 
   @override
   State<CreateAccount> createState() => _CreateAccount();
+}
+
+Future<void> saveUserCredentials(
+    String? username, String? email, String? password, int? id) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('username', username!);
+  await prefs.setString('email', email!);
+  await prefs.setInt('id', id!);
+  await prefs.setString('password', password!);
+}
+
+Future<String> getUsername() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String? username = prefs.getString('username');
+  return username!;
 }
 
 class _CreateAccount extends State<CreateAccount> {
@@ -209,10 +225,12 @@ class _CreateAccount extends State<CreateAccount> {
                           emailController.text.toString(),
                           passwordController.text.toString(),
                         );
-                        var username = data.userName;
-                        var email = data.email;
-                        var password = data.password;
-                        var id = data.id;
+                        String? username = data.userName;
+                        String? email = data.email;
+                        String? password = data.password;
+                        int? id = data.id;
+                        print(username);
+                        saveUserCredentials(username, email, password, id);
                       },
                       child: Row(
                         children: const [
