@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smarket_app/presentation/screens/create_account.dart';
 import 'package:smarket_app/presentation/screens/reset_password.dart';
-
 import '../widgets/background.dart';
 import 'email_otp.dart';
 import 'homeScreen.dart';
@@ -196,6 +195,7 @@ class _SignInState extends State<SignIn> {
                       ));
                     },
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // const SizedBox(
                         //   width: 5.0,
