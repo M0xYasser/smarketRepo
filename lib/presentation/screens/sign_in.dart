@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smarket_app/data/models/get_sign_in.dart';
 import 'package:smarket_app/presentation/screens/create_account.dart';
 import 'package:smarket_app/presentation/screens/reset_password.dart';
+import '../../data/repository/post_account.dart';
 import '../widgets/background.dart';
 import 'email_otp.dart';
 import 'homeScreen.dart';
@@ -11,6 +14,14 @@ class SignIn extends StatefulWidget {
 
   @override
   State<SignIn> createState() => _SignInState();
+}
+
+Future<void> saveUserCredentials(
+    String? email, String? password, int? id) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('email', email!);
+  await prefs.setString('password', password!);
+  await prefs.setInt('id', id!);
 }
 
 class _SignInState extends State<SignIn> {
@@ -189,7 +200,18 @@ class _SignInState extends State<SignIn> {
                   color: const Color(0xff2c6976),
                 ),
                 child: MaterialButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      // GetSignIn data = await signIn(
+                      //  emailController.text.toString(),
+                      //  passwordController.text.toString(),
+                      //  );
+                      //  String? email = data.email;
+                      //  String? password = data.password;
+                      //  int? id = data.id;
+
+                      //  print(email);
+                      //  saveUserCredentials(email, password, id);
+
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (context) => const Home(),
                       ));

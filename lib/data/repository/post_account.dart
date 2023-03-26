@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../models/get_create_account.dart';
+import '../models/get_sign_in.dart';
 
 Future<GetCreateAccount> createAccount(
     String userName, String email, String password) async {
   final response = await http.post(Uri.parse(
-      'https://5a12-41-233-251-41.eu.ngrok.io/CreateAccount?userName=$userName&password=$password&email=$email'));
+      'https://smartcartapplication.azurewebsites.net/[AccountController]/CreateAccount?userName=$userName&email=$email&password=$password'));
   return GetCreateAccount.fromJson(jsonDecode(response.body));
   // print(response.statusCode);
   // if (response.statusCode == 200) {
@@ -17,6 +18,11 @@ Future<GetCreateAccount> createAccount(
   // }
 }
 
+// Future<GetSignIn> signIn(String email, String password) async {
+  // final response = await http.post(Uri.parse(
+      // 'https://smartcartapplication.azurewebsites.net/[SignInController]/SignIn?email=$email&password=$password'));
+  // return GetSignIn.fromJson(jsonDecode(response.body));
+// }
 // class Account {
 //   final String userName;
 //   final String email;
