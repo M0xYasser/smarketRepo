@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/models/get_create_account.dart';
 import '../../data/repository/post_account.dart';
 import '../widgets/background.dart';
+import 'homeScreen.dart';
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({super.key});
@@ -20,12 +21,6 @@ Future<void> saveUserCredentials(
   await prefs.setString('email', email!);
   await prefs.setInt('id', id!);
   await prefs.setString('password', password!);
-}
-
-Future<String> getUsername() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  final String? username = prefs.getString('username');
-  return username!;
 }
 
 class _CreateAccount extends State<CreateAccount> {
@@ -225,19 +220,32 @@ class _CreateAccount extends State<CreateAccount> {
                           emailController.text.toString(),
                           passwordController.text.toString(),
                         );
-                        String? username = data.userName;
-                        String? email = data.email;
-                        String? password = data.password;
                         int? id = data.id;
-                        print(username);
-                        saveUserCredentials(username, email, password, id);
+                        // print("-------------$id--------------");
+                        // print("-------------${data.success}--------------");
+                        saveUserCredentials(
+                            usernameController.text.toString(),
+                            emailController.text.toString(),
+                            passwordController.text.toString(),
+                            id);
+
+                        data.success == "true"
+                            ? Navigator.of(context)
+                                .pushReplacement(MaterialPageRoute(
+                                builder: (context) => const Home(),
+                              ))
+                            : ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                                content: Text("Oops, this process failed"),
+                              ));
                       },
                       child: Row(
-                        children: const [
-                          // SvgPicture.asset(
-                          //   'assets/icons/start.svg',
-                          //   width: 15,
-                          // ),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/start.svg',
+                            width: 15,
+                          ),
                           const SizedBox(
                             width: 10.0,
                           ),
