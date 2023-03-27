@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants/constant.dart';
 import '../../data/repository/post_account.dart';
@@ -11,16 +12,34 @@ import '../widgets/drawerHeader.dart';
 import '../widgets/drawerListTitle.dart';
 import '../widgets/homeBtn.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   initState() {
     createAccount("userName", "email", "password");
+    getUseInfo();
+  }
+
+  String userName = " ";
+  String userEmail = " ";
+  getUseInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? username = prefs.getString('username');
+    final String? email = prefs.getString('email');
+    setState(() {
+      userName = username!;
+      userEmail = email!;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-
     return Scaffold(
       backgroundColor: myDarkGreen,
       appBar: AppBar(
@@ -35,8 +54,8 @@ class Home extends StatelessWidget {
         children: const [
           CustomDrawerHeader(
               imageUrl: "assets/images/person.jpg",
-              name: "M0xYasser",
-              email: "M0xyasser@gmail.com"),
+              name: userName,
+              email: userEmail),
           DrawerListTitle(
             title: "Account Settings",
             icon: "user",

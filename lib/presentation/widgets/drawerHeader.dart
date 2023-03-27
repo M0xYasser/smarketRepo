@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/constant.dart';
 
 class CustomDrawerHeader extends StatelessWidget {
-  final String imageUrl, name, email;
+  final String? imageUrl, name, email;
   const CustomDrawerHeader(
       {super.key,
       required this.imageUrl,
