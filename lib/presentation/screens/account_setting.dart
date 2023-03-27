@@ -2,16 +2,39 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smarket_app/presentation/widgets/customAppBar.dart';
 
-class AccountSetting extends StatelessWidget {
+class AccountSetting extends StatefulWidget {
+  const AccountSetting({super.key});
+
+  @override
+  State<AccountSetting> createState() => _AccountSettingState();
+}
+
+class _AccountSettingState extends State<AccountSetting> {
   var emailController = TextEditingController();
-
   var passwordController = TextEditingController();
-
   bool password = true;
+  bool isEditing = false;
+  TextEditingController controller = TextEditingController();
+  String userName = "";
+  String userEmail = "";
+  getUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? username = prefs.getString('username');
+    final String? email = prefs.getString('email');
+    setState(() {
+      userName = username!;
+      userEmail = email!;
+    });
+  }
 
-  AccountSetting({super.key});
+  @override
+  void initState() {
+    getUserName();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,166 +85,63 @@ class AccountSetting extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
               child: SizedBox(
-                width: 280,
+                width: MediaQuery.of(context).size.width - 48,
                 height: 48,
-                child: TextFormField(
-                  style: const TextStyle(
-                      fontFamily: "harabaraBold",
-                      color: Color(0xff333333),
-                      fontSize: 18),
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    labelStyle: const TextStyle(
+                child: IgnorePointer(
+                  ignoring: isEditing,
+                  child: TextFormField(
+                    enabled: !isEditing,
+                    style: const TextStyle(
                         fontFamily: "harabaraBold",
-                        color: Color(0xff2C6976),
+                        color: Color(0xff333333),
                         fontSize: 18),
-                    prefixIcon: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(
-                          width: 24,
-                        ),
-                        SvgPicture.asset("assets/icons/solid_user.svg"),
-                        const SizedBox(
-                          width: 14,
-                        )
-                      ],
-                    ),
-                    suffixIcon: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(
-                          width: 24,
-                        ),
-                        SvgPicture.asset("assets/icons/edit.svg"),
-                        const SizedBox(
-                          width: 26,
-                        )
-                      ],
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            width: 1.0,
-                            color: Color.fromARGB(255, 44, 105, 118)),
-                        borderRadius: BorderRadius.circular(50.0)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            width: 1.0,
-                            color: Color.fromARGB(255, 44, 105, 118)),
-                        borderRadius: BorderRadius.circular(50.0)),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-              child: SizedBox(
-                width: 280,
-                height: 48,
-                child: TextFormField(
-                  keyboardType: TextInputType.text,
-                  controller: emailController,
-                  style: const TextStyle(
-                      fontFamily: "harabaraBold",
-                      color: Color(0xff333333),
-                      fontSize: 18),
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    labelStyle: const TextStyle(
-                        fontFamily: "harabaraBold",
-                        color: Color(0xff2C6976),
-                        fontSize: 18),
-                    prefixIcon: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(
-                          width: 24,
-                        ),
-                        SvgPicture.asset("assets/icons/email.svg"),
-                        const SizedBox(
-                          width: 14,
-                        )
-                      ],
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            width: 1.0,
-                            color: Color.fromARGB(255, 44, 105, 118)),
-                        borderRadius: BorderRadius.circular(50.0)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            width: 1.0,
-                            color: Color.fromARGB(255, 44, 105, 118)),
-                        borderRadius: BorderRadius.circular(50.0)),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-              child: SizedBox(
-                width: 280,
-                height: 48,
-                child: TextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  controller: passwordController,
-                  obscureText: password,
-                  style: const TextStyle(
-                      fontFamily: "harabaraBold",
-                      color: Color(0xff333333),
-                      fontSize: 18),
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    labelStyle: const TextStyle(
-                        fontFamily: "harabaraBold",
-                        color: Color(0xff2C6976),
-                        fontSize: 18),
-                    prefixIcon: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(
-                          width: 24,
-                        ),
-                        SvgPicture.asset("assets/icons/lock.svg"),
-                        const SizedBox(
-                          width: 14,
-                        )
-                      ],
-                    ),
-                    suffixIcon: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(
-                          width: 24,
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          style: TextButton.styleFrom(
-                            foregroundColor:
-                                const Color(0xff2C6976), // Text Color
+                    decoration: InputDecoration(
+                      labelText: userName,
+                      labelStyle: const TextStyle(
+                          fontFamily: "harabaraBold",
+                          color: Color(0xff2C6976),
+                          fontSize: 18),
+                      prefixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(
+                            width: 24,
                           ),
-                          child: const Text(
-                            'Reset Password',
-                            style: TextStyle(
-                              fontFamily: "harabaraBold",
-                            ),
+                          SvgPicture.asset("assets/icons/solid_user.svg"),
+                          const SizedBox(
+                            width: 14,
+                          )
+                        ],
+                      ),
+                      suffixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(
+                            width: 24,
                           ),
-                        ),
-                        const SizedBox(
-                          width: 14,
-                        )
-                      ],
+                          InkWell(
+                              onTap: () {
+                                setState(() {
+                                  isEditing = false;
+                                });
+                              },
+                              child: SvgPicture.asset("assets/icons/edit.svg")),
+                          const SizedBox(
+                            width: 26,
+                          )
+                        ],
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              width: 1.0,
+                              color: Color.fromARGB(255, 44, 105, 118)),
+                          borderRadius: BorderRadius.circular(50.0)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              width: 1.0,
+                              color: Color.fromARGB(255, 44, 105, 118)),
+                          borderRadius: BorderRadius.circular(50.0)),
                     ),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            width: 1.0,
-                            color: Color.fromARGB(255, 44, 105, 118)),
-                        borderRadius: BorderRadius.circular(50.0)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            width: 1.0,
-                            color: Color.fromARGB(255, 44, 105, 118)),
-                        borderRadius: BorderRadius.circular(50.0)),
                   ),
                 ),
               ),
@@ -229,60 +149,210 @@ class AccountSetting extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
               child: SizedBox(
-                width: 280,
+                width: MediaQuery.of(context).size.width - 48,
                 height: 48,
-                child: TextFormField(
-                  style: const TextStyle(
-                      fontFamily: "harabaraBold",
-                      color: Color(0xff333333),
-                      fontSize: 18),
-                  decoration: InputDecoration(
-                    labelText: 'Language',
-                    labelStyle: const TextStyle(
+                child: IgnorePointer(
+                  ignoring: true,
+                  child: TextFormField(
+                    keyboardType: TextInputType.text,
+                    controller: emailController,
+                    style: const TextStyle(
                         fontFamily: "harabaraBold",
-                        color: Color(0xff2C6976),
+                        color: Colors.grey,
                         fontSize: 18),
-                    prefixIcon: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(
-                          width: 24,
-                        ),
-                        SvgPicture.asset("assets/icons/language.svg"),
-                        const SizedBox(
-                          width: 14,
-                        )
-                      ],
+                    decoration: InputDecoration(
+                      labelText: userEmail,
+                      labelStyle: const TextStyle(
+                          fontFamily: "harabaraBold",
+                          color: Colors.grey,
+                          fontSize: 18),
+                      prefixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(
+                            width: 24,
+                          ),
+                          SvgPicture.asset(
+                            "assets/icons/email.svg",
+                            color: Colors.grey,
+                          ),
+                          const SizedBox(
+                            width: 14,
+                          )
+                        ],
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(width: 1.0, color: Colors.grey),
+                          borderRadius: BorderRadius.circular(50.0)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(width: 1.0, color: Colors.grey),
+                          borderRadius: BorderRadius.circular(50.0)),
                     ),
-                    suffixIcon: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(
-                          width: 24,
-                        ),
-                        MaterialButton(
-                          onPressed: () {},
-                          child: SvgPicture.asset("assets/icons/down.svg"),
-                        ),
-                        const SizedBox(
-                          width: 0,
-                        )
-                      ],
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            width: 1.0,
-                            color: Color.fromARGB(255, 44, 105, 118)),
-                        borderRadius: BorderRadius.circular(50.0)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            width: 1.0,
-                            color: Color.fromARGB(255, 44, 105, 118)),
-                        borderRadius: BorderRadius.circular(50.0)),
                   ),
                 ),
               ),
             ),
+            Stack(
+              alignment: AlignmentDirectional.centerEnd,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width - 48,
+                    height: 48,
+                    child: IgnorePointer(
+                      ignoring: true,
+                      child: TextFormField(
+                        keyboardType: TextInputType.visiblePassword,
+                        controller: passwordController,
+                        obscureText: password,
+                        style: const TextStyle(
+                            fontFamily: "star",
+                            color: Colors.grey,
+                            fontSize: 18),
+                        decoration: InputDecoration(
+                          labelText: '***********',
+                          labelStyle: const TextStyle(
+                              fontFamily: "star",
+                              color: Colors.grey,
+                              fontSize: 18),
+                          prefixIcon: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const SizedBox(
+                                width: 24,
+                              ),
+                              SvgPicture.asset(
+                                "assets/icons/lock.svg",
+                                color: Colors.grey,
+                              ),
+                              const SizedBox(
+                                width: 14,
+                              )
+                            ],
+                          ),
+                          // suffixIcon: Row(
+                          // mainAxisSize: MainAxisSize.min,
+                          // children: [
+                          // const SizedBox(
+                          // width: 24,
+                          // ),
+                          // TextButton(
+                          // onPressed: () {},
+                          // style: TextButton.styleFrom(
+                          // foregroundColor:
+                          // const Color(0xff2C6976), // Text Color
+                          // ),
+                          // child: const Text(
+                          // 'Reset Password',
+                          // style: TextStyle(
+                          // fontFamily: "harabaraBold",
+                          // ),
+                          // ),
+                          // ),
+                          // const SizedBox(
+                          // width: 14,
+                          // )
+                          // ],
+                          // ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  width: 1.0, color: Colors.grey),
+                              borderRadius: BorderRadius.circular(50.0)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  width: 1.0, color: Colors.grey),
+                              borderRadius: BorderRadius.circular(50.0)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(
+                      width: 24,
+                    ),
+                    TextButton(
+                      onPressed: () {},
+                      style: TextButton.styleFrom(
+                        foregroundColor: const Color(0xff2C6976), // Te
+                      ),
+                      child: const Text(
+                        'Reset Password',
+                        style: TextStyle(
+                          fontFamily: "harabaraBold",
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 48,
+                    )
+                  ],
+                ),
+              ],
+            ),
+            /*Padding(
+             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+             child: SizedBox(
+               width:  MediaQuery.of(context).size.width - 48,
+               height: 48,
+               child: TextFormField(
+                 style: const TextStyle(
+                     fontFamily: "harabaraBold",
+                     color: Color(0xff333333),
+                     fontSize: 18),
+                 decoration: InputDecoration(
+                   labelText: 'Language',
+                   labelStyle: const TextStyle(
+                       fontFamily: "harabaraBold",
+                       color: Color(0xff2C6976),
+                       fontSize: 18),
+                   prefixIcon: Row(
+                     mainAxisSize: MainAxisSize.min,
+                     children: [
+                       const SizedBox(
+                         width: 24,
+                       ),
+                       SvgPicture.asset("assets/icons/language.svg"),
+                       const SizedBox(
+                         width: 14,
+                       )
+                     ],
+                   ),
+                   suffixIcon: Row(
+                     mainAxisSize: MainAxisSize.min,
+                     children: [
+                       const SizedBox(
+                         width: 24,
+                       ),
+                       MaterialButton(
+                         onPressed: () {},
+                         child: SvgPicture.asset("assets/icons/down.svg"),
+                       ),
+                       const SizedBox(
+                         width: 0,
+                       )
+                     ],
+                   ),
+                   enabledBorder: OutlineInputBorder(
+                       borderSide: const BorderSide(
+                           width: 1.0,
+                           color: Color.fromARGB(255, 44, 105, 118)),
+                       borderRadius: BorderRadius.circular(50.0)),
+                   focusedBorder: OutlineInputBorder(
+                       borderSide: const BorderSide(
+                           width: 1.0,
+                           color: Color.fromARGB(255, 44, 105, 118)),
+                       borderRadius: BorderRadius.circular(50.0)),
+                 ),
+               ),
+             ),
+           ),*/
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 190, vertical: 20),

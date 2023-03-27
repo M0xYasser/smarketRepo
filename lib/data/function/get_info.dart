@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<String> getUserName() async {
+getUserName() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final String? username = prefs.getString('username');
   return username!;

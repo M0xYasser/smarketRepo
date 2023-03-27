@@ -58,3 +58,6 @@ flutter:
     - family: open
       fonts:
         - asset: assets/fonts/open.ttf
+    - family: star
+      fonts:
+       - asset: assets/fonts/Roboto-Black.ttf
