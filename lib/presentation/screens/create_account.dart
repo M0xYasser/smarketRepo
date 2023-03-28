@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -249,7 +251,7 @@ class _CreateAccount extends State<CreateAccount> {
                           const SizedBox(
                             width: 10.0,
                           ),
-                          Text(
+                          const Text(
                             'Create',
                             style: TextStyle(
                               color: Colors.white,

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smarket_app/data/function/get_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/constant.dart';
 import '../widgets/customAppBar.dart';
@@ -61,13 +59,12 @@ class Support extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () async {
-                      // final Uri mailWithBody = Uri.parse(
-                      // "mailto:$supportMail?subject=Support&body=${supportTxt.text}");
-                      // if (!await launchUrl(mailWithBody,
-                      // mode: LaunchMode.externalApplication)) {
-                      // throw Exception('Could not launch $mailWithBody.');
-                      // }
-                      print(getUserName());
+                      final Uri mailWithBody = Uri.parse(
+                          "mailto:$supportMail?subject=Support&body=${supportTxt.text}");
+                      if (!await launchUrl(mailWithBody,
+                          mode: LaunchMode.externalApplication)) {
+                        throw Exception('Could not launch $mailWithBody.');
+                      }
                     },
                     child: Container(
                         width: 200,

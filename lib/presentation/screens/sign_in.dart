@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smarket_app/data/models/get_sign_in.dart';
 import 'package:smarket_app/presentation/screens/create_account.dart';
-import 'package:smarket_app/presentation/screens/reset_password.dart';
-import '../../data/repository/post_account.dart';
 import '../widgets/background.dart';
 import 'email_otp.dart';
 import 'homeScreen.dart';

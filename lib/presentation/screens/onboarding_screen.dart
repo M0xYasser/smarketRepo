@@ -1,8 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smarket_app/presentation/screens/sign_in.dart';
-import 'package:smarket_app/presentation/screens/testScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -44,17 +46,27 @@ class OnoardingScreenState extends State<OnboardingScreen> {
   }
   //Navigator Style
 
-  //saveprefs() async{
-  //SharedPreferences preferences = await SharedPreferences.getInstance();
-  //final showScreen = preferences.getBool('showScreen')?? false;
-  //if (showScreen != null){
-  //Navigator.of(context).pushReplacement(
-  //  MaterialPageRoute(
-  //    builder: (context) => Temp()));}}
+  // saveprefs() async {
+  //   SharedPreferences preferences = await SharedPreferences.getInstance();
+  //   final showScreen = preferences.getBool('showScreen') ?? false;
+  //   if (showScreen == true) {
+  //     Navigator.of(context).pushReplacement(
+  //         MaterialPageRoute(builder: (context) => const SignIn()));
+  //   }
+  // }
+  _storeOnboardInfo() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    print("Shared pref called");
+    int isViewed = 1;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('onBoard', isViewed);
+    print(prefs.getInt('onBoard'));
+  }
 
   @override
   void initState() {
-    //saveprefs();
+    // saveprefs();
+    _storeOnboardInfo();
     super.initState();
   }
 

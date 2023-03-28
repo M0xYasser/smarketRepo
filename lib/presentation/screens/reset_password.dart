@@ -22,7 +22,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     return BackGround(
       close: true,
       children: [
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
         Image.asset(
