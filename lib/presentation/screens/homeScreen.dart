@@ -20,7 +20,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  @override
   initState() {
+    super.initState();
     createAccount("userName", "email", "password");
     getUseInfo();
   }
@@ -51,34 +53,34 @@ class _HomeState extends State<Home> {
       drawer: Drawer(
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           CustomDrawerHeader(
               imageUrl: "assets/images/person.jpg",
               name: userName,
               email: userEmail),
-          DrawerListTitle(
+          const DrawerListTitle(
             title: "Account Settings",
             icon: "user",
             toScreen: 'setting',
           ),
-          DrawerListTitle(
+          const DrawerListTitle(
             title: "Billing Settings",
             icon: "bank",
             toScreen: 'billing',
           ),
-          DrawerListTitle(
+          const DrawerListTitle(
             title: "Signout",
             icon: "logout",
             toScreen: 'signout',
             divider: true,
             logOut: true,
           ),
-          DrawerListTitle(
+          const DrawerListTitle(
             title: "Support",
             icon: "support",
             toScreen: 'support',
           ),
-          DrawerListTitle(
+          const DrawerListTitle(
             title: "About",
             icon: "help",
             toScreen: 'about',

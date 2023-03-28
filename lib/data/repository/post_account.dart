@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../models/get_create_account.dart';
-import '../models/get_sign_in.dart';
 
 Future<GetCreateAccount> createAccount(
     String userName, String email, String password) async {
