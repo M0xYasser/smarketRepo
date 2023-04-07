@@ -21,6 +21,8 @@ dependencies:
   google_fonts: ^4.0.3
   google_sign_in_web: ^0.11.0
   http: ^0.13.5
+  image_picker: ^0.8.7
+  get: ^4.6.5
   intl: ^0.18.0
   native_pdf_renderer: ^5.0.0+1
   open_file: ^3.2.1
@@ -60,4 +62,4 @@ flutter:
         - asset: assets/fonts/open.ttf
     - family: star
       fonts:
-       - asset: assets/fonts/Roboto-Black.ttf
+        - asset: assets/fonts/Roboto-Black.ttf
