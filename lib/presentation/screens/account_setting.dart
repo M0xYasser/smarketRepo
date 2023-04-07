@@ -2,78 +2,57 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smarket_app/core/constants/constant.dart';
+import 'package:smarket_app/data/controller/account_setting_controller.dart';
 import 'package:smarket_app/presentation/widgets/customAppBar.dart';
 
 import 'dart:convert';
 import 'dart:io';
-//import 'package:image_picker/image_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
 class AccountSetting extends StatefulWidget {
-  const AccountSetting({super.key});
+  File? pickedFile;
+
+  ImagePicker imagePicker = ImagePicker();
+
+  AccountSetting({super.key});
 
   @override
   State<AccountSetting> createState() => _AccountSettingState();
 }
 
 class _AccountSettingState extends State<AccountSetting> {
-  // File _imageFile;
-  // String _imageUrl;
-
-  // Future<void> _uploadImage() async {
-  // final picker = ImagePicker();
-  // final pickedFile = await picker.getImage(source: ImageSource.gallery);
-  // setState(() {
-  // _imageFile = File(pickedFile.path);
-  // });
-
-  // final url = 'http://your-api-url.com/upload-image';
-  // final bytes = await _imageFile.readAsBytes();
-  // final base64Image = base64Encode(bytes);
-  // final response = await http.post(
-  // Uri.parse(url),
-  // body: {
-  // 'image': base64Image,
-  // },
-  // );
-
-  // if (response.statusCode == 200) {
-  // final jsonResponse = jsonDecode(response.body);
-  // final newImageUrl = jsonResponse['image_url'];
-  // setState(() {
-  // _imageUrl = newImageUrl;
-  // });
-
-  // Update user's profile picture in database
-  // final profileUpdateUrl = 'http://your-api-url.com/update-profile';
-  // final profileUpdateResponse = await http.post(
-  // Uri.parse(profileUpdateUrl),
-  // body: {
-  // 'user_id': '123', // replace with actual user ID
-  // 'profile_picture_url': newImageUrl,
-  // },
-  // );
-  // if (profileUpdateResponse.statusCode == 200) {
-  // print('Profile picture updated successfully');
-  // }
-  // }
-  // }
+  //AccountSettingController accountSettingController = Get.put(AccountSettingController());
+  //AccountSettingController accountSettingController = Get.find();
 
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
+  var nameController = TextEditingController();
+  var nameFocusNode = FocusNode();
   bool password = true;
-  bool isEditing = false;
+  bool isEditing = true;
+  bool isDisableBtn = true;
+  Color buttonColor = Colors.grey;
   TextEditingController controller = TextEditingController();
+
+  final namecontroller = TextEditingController(text: "Your initial value");
   String userName = "";
   String userEmail = "";
+  String labelName = "userName";
+
   getUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? username = prefs.getString('username');
     final String? email = prefs.getString('email');
+
     setState(() {
       userName = username!;
       userEmail = email!;
+      labelName = userName;
     });
   }
 
@@ -105,6 +84,13 @@ class _AccountSettingState extends State<AccountSetting> {
                         shape: BoxShape.circle,
                         image: DecorationImage(
                           fit: BoxFit.cover,
+
+                          /*image: accountSettingController
+                                      .isProfilePicPathSet.value ==
+                                  true
+                              ? FileImage(file(accountSettingController
+                                  .profilePicPath.value)) as ImageProvider*/
+
                           image: AssetImage('assets/images/person.jpg'),
                         ),
                       ),
@@ -121,8 +107,17 @@ class _AccountSettingState extends State<AccountSetting> {
                                 color:
                                     Theme.of(context).scaffoldBackgroundColor,
                               )),
-                          child: SvgPicture.asset(
-                            'assets/icons/add.svg',
+                          child: InkWell(
+                            child: SvgPicture.asset(
+                              'assets/icons/add.svg',
+                            ),
+                            onTap: () {
+                              takePhoto(ImageSource.gallery);
+
+                              /*showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) => bottomSheet(context));*/
+                            },
                           ),
                         ))
                   ],
@@ -141,16 +136,20 @@ class _AccountSettingState extends State<AccountSetting> {
                     child: IgnorePointer(
                       ignoring: isEditing,
                       child: TextFormField(
-                        enabled: !isEditing,
+                        keyboardType: TextInputType.text,
+                        controller: nameController,
+                        obscureText: false,
+                        focusNode: nameFocusNode,
+                        onFieldSubmitted: (Value) {},
                         style: const TextStyle(
                             fontFamily: "harabaraBold",
                             color: Color(0xff333333),
                             fontSize: 18),
                         decoration: InputDecoration(
-                          labelText: userName,
-                          labelStyle: const TextStyle(
+                          labelText: labelName,
+                          labelStyle: TextStyle(
                               fontFamily: "harabaraBold",
-                              color: Color(0xff2C6976),
+                              color: buttonColor,
                               fontSize: 18),
                           prefixIcon: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -158,7 +157,10 @@ class _AccountSettingState extends State<AccountSetting> {
                               const SizedBox(
                                 width: 24,
                               ),
-                              SvgPicture.asset("assets/icons/solid_user.svg"),
+                              SvgPicture.asset(
+                                "assets/icons/solid_user.svg",
+                                color: buttonColor,
+                              ),
                               const SizedBox(
                                 width: 14,
                               )
@@ -183,38 +185,40 @@ class _AccountSettingState extends State<AccountSetting> {
                             ],
                           ),*/
                           enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  width: 1.0,
-                                  color: Color.fromARGB(255, 44, 105, 118)),
+                              borderSide:
+                                  BorderSide(width: 1.0, color: buttonColor),
                               borderRadius: BorderRadius.circular(50.0)),
                           focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  width: 1.0,
-                                  color: Color.fromARGB(255, 44, 105, 118)),
+                              borderSide:
+                                  BorderSide(width: 1.0, color: buttonColor),
                               borderRadius: BorderRadius.circular(50.0)),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(
-                  width: 24,
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(
+                      width: 24,
+                    ),
+                    InkWell(
+                        onTap: () {
+                          setState(() {
+                            isEditing = false;
+                            buttonColor = myDarkGreen;
+                            labelName = "Name";
+                            nameController.text = userName;
+                            isDisableBtn = false;
+                          });
+                        },
+                        child: SvgPicture.asset("assets/icons/edit.svg")),
+                    const SizedBox(
+                      width: 48,
+                    )
+                  ],
                 ),
-                InkWell(
-                    onTap: () {
-                      setState(() {
-                        isEditing = false;
-                      });
-                    },
-                    child: SvgPicture.asset("assets/icons/edit.svg")),
-                const SizedBox(
-                  width: 26,
-                )
               ],
             ),
             Padding(
@@ -432,15 +436,19 @@ class _AccountSettingState extends State<AccountSetting> {
                   borderRadius: BorderRadius.circular(
                     200.0,
                   ),
-                  color: const Color(0xff2C6976),
+                  color: (isDisableBtn) ? Colors.grey : myDarkGreen,
                 ),
                 child: MaterialButton(
-                    onPressed: () {},
+                    onPressed: (isDisableBtn)
+                        ? null
+                        : () {
+                            print(nameController.text);
+                          },
                     height: 50.0,
-                    child: const Text(
+                    child: Text(
                       'Save',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: (isDisableBtn) ? Colors.white54 : Colors.white,
                         fontFamily: "harabaraBold",
                         fontSize: 20.0,
                       ),
@@ -451,5 +459,100 @@ class _AccountSettingState extends State<AccountSetting> {
         ),
       ),
     );
+  }
+
+  /*Widget bottomSheet(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return Container(
+      width: double.infinity,
+      height: size.height * 0.3,
+      margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+      child: Column(
+        children: [
+          const Text(
+            "Choose Profile Photo",
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                fontFamily: "harabaraBold",
+                color: Color(0xff2C6976)),
+          ),
+          const SizedBox(
+            height: 50,
+          ),
+          
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.image,
+                      color: Color(0xff2C6976),
+                      size: 60,
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      "Gallary",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: "harabaraBold",
+                          color: Color(0xff2C6976)),
+                    )
+                  ],
+                ),
+                onTap: () {
+                  takePhoto(ImageSource.gallery);
+                },
+              ),
+              const SizedBox(
+                width: 100,
+              ),
+              InkWell(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.camera,
+                      color: Color(0xff2C6976),
+                      size: 60,
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      "Camera",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: "harabaraBold",
+                          color: Color(0xff2C6976)),
+                    )
+                  ],
+                ),
+                onTap: () {
+                  print("camera");
+                  takePhoto(ImageSource.camera);
+                },
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }*/
+
+  Future<void> takePhoto(ImageSource source) async {
+    final pickedImage =
+        await widget.imagePicker.pickImage(source: source, imageQuality: 100);
+
+    widget.pickedFile = File(pickedImage!.path);
+    //accountSettingController.setProfileImagePath(pickedFile!.path);
+
+    Get.back();
+    //print(widget.pickedFile);
   }
 }
