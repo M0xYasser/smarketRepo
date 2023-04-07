@@ -56,11 +56,9 @@ class OnoardingScreenState extends State<OnboardingScreen> {
   // }
   _storeOnboardInfo() async {
     WidgetsFlutterBinding.ensureInitialized();
-    print("Shared pref called");
     int isViewed = 1;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('onBoard', isViewed);
-    print(prefs.getInt('onBoard'));
   }
 
   @override

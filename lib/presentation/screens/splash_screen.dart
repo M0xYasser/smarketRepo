@@ -16,8 +16,10 @@ class _SplashScreenState extends State<SplashScreen> {
   int? isviewed;
   getIsViewed() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    isviewed = prefs.getInt('onBoard');
-    print(isviewed);
+
+    setState(() {
+      isviewed = prefs.getInt('onBoard');
+    });
   }
 
   @override
