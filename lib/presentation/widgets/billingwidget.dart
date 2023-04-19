@@ -5,7 +5,6 @@ import '../../core/constants/constant.dart';
 
 class BillingWidget extends StatelessWidget {
   final String state, cardnumber;
-
   final void Function() onTap;
 
   const BillingWidget({
@@ -39,13 +38,11 @@ class BillingWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
-                    width: 40,
-                    child: SvgPicture.asset(
-                      (state == "master")
-                          ? "assets/icons/visa.svg"
-                          : "assets/icons/mastercard.svg",
-                    )),
+                SizedBox(width: 40, child: SvgPicture.asset(
+                    // (state == "master")
+                    //     ? "assets/icons/visa.svg"
+                    //     : "assets/icons/mastercard.svg",
+                    "assets/icons/mastercard.svg")),
                 SizedBox(
                   width: 60,
                   child: Text(
@@ -106,7 +103,9 @@ class BillingWidget extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       GestureDetector(
-                                        onTap: (() => Navigator.pop(context)),
+                                        onTap: (() {
+                                          Navigator.pop(context);
+                                        }),
                                         child: Container(
                                           height: 36,
                                           width: 84,
@@ -129,7 +128,10 @@ class BillingWidget extends StatelessWidget {
                                         ),
                                       ),
                                       GestureDetector(
-                                        onTap: onTap,
+                                        onTap: () {
+                                          onTap;
+                                          Navigator.pop(context);
+                                        },
                                         child: Container(
                                           height: 36,
                                           width: 84,

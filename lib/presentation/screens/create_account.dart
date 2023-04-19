@@ -226,16 +226,16 @@ class _CreateAccount extends State<CreateAccount> {
                           passwordController.text.toString(),
                         );
                         int? id = data.id;
-                        // print("-------------$id--------------");
-                        // print("-------------${data.success}--------------");
+                        print("-------------$id--------------");
+                        print("-------------${data.success}--------------");
                         saveUserCredentials(id);
 
                         if (data.success == "True") {
+                          isSignin();
                           Navigator.of(context)
                               .pushReplacement(MaterialPageRoute(
                             builder: (context) => const Home(),
                           ));
-                          isSignin();
                         } else {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
@@ -265,17 +265,6 @@ class _CreateAccount extends State<CreateAccount> {
                       )),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(
-            height: 08.0,
-          ),
-          const Text(
-            '— OR —',
-            style: TextStyle(
-              fontFamily: "harabaraBold",
-              fontSize: 12,
-              color: Colors.grey,
             ),
           ),
         ],

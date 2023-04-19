@@ -43,7 +43,7 @@ class _AccountSettingState extends State<AccountSetting> {
   final namecontroller = TextEditingController(text: "Your initial value");
   String userName = "";
   String userEmail = "";
-  String labelName = "userName";
+  String labelName = "";
   int userId = 0;
 
   getUserName() async {
@@ -62,6 +62,7 @@ class _AccountSettingState extends State<AccountSetting> {
   @override
   void initState() {
     getUserName();
+    
     super.initState();
   }
 
@@ -436,13 +437,16 @@ class _AccountSettingState extends State<AccountSetting> {
                ),
              ),
            ),*/
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 190, vertical: 20),
+            const SizedBox(
+              height: 24,
+            ),
+            Center(
               child: Container(
+                height: 40,
+                width: 120,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(
-                    200.0,
+                    30.0,
                   ),
                   color: (isDisableBtn) ? Colors.grey : myDarkGreen,
                 ),
@@ -478,7 +482,7 @@ class _AccountSettingState extends State<AccountSetting> {
   /*Widget bottomSheet(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      width: double.infinity,
+      width: double.infinity,R
       height: size.height * 0.3,
       margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
       child: Column(

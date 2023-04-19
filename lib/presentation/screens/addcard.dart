@@ -1,9 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../data/repository/post_card.dart';
 import '../widgets/customAppBar.dart';
+import 'billingtscreen.dart';
 
-class AddCard extends StatelessWidget {
+class AddCard extends StatefulWidget {
   const AddCard({Key? key}) : super(key: key);
+
+  @override
+  State<AddCard> createState() => _AddCardState();
+}
+
+class _AddCardState extends State<AddCard> {
+  final TextEditingController _cardHolderController = TextEditingController();
+  final TextEditingController _cardNumberController = TextEditingController();
+  final TextEditingController _expirtationDateController =
+      TextEditingController();
+  final TextEditingController _cvvController = TextEditingController();
+  int userId = 0;
+
+  getId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int? id = prefs.getInt('id');
+
+    setState(() {
+      userId = id!;
+    });
+  }
+
+  @override
+  void initState() {
+    getId();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +62,7 @@ class AddCard extends StatelessWidget {
                 width: 400,
                 height: 48,
                 child: TextFormField(
+                  controller: _cardHolderController,
                   style: const TextStyle(
                       fontFamily: "harabaraBold",
                       color: Color(0xff333333),
@@ -74,6 +105,7 @@ class AddCard extends StatelessWidget {
                 width: 400,
                 height: 48,
                 child: TextFormField(
+                  controller: _cardNumberController,
                   style: const TextStyle(
                       fontFamily: "harabaraBold",
                       color: Color(0xff333333),
@@ -116,6 +148,7 @@ class AddCard extends StatelessWidget {
                 width: 400,
                 height: 48,
                 child: TextFormField(
+                  controller: _expirtationDateController,
                   style: const TextStyle(
                       fontFamily: "harabaraBold",
                       color: Color(0xff333333),
@@ -158,6 +191,7 @@ class AddCard extends StatelessWidget {
                 width: 400,
                 height: 48,
                 child: TextFormField(
+                  controller: _cvvController,
                   style: const TextStyle(
                       fontFamily: "harabaraBold",
                       color: Color(0xff333333),
@@ -206,7 +240,18 @@ class AddCard extends StatelessWidget {
                   color: const Color(0xff2c6976),
                 ),
                 child: MaterialButton(
-                    onPressed: () {},
+                    onPressed: ()  {
+                      createCard(
+                          _cardHolderController.text.toString(),
+                          _cardNumberController.text.toString(),
+                          _expirtationDateController.text.toString(),
+                          _cvvController.text.toString(),
+                          userId.toString());
+
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const BillingScreen(),
+                      ));
+                    },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(

@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smarket_app/presentation/screens/addcard.dart';
+import '../../data/repository/delete_card.dart';
 import '../widgets/billingwidget.dart';
 import '../widgets/customAppBar.dart';
-import '../../data/models/billingdetails.dart';
 import 'emptycard.dart';
+import 'package:http/http.dart' as http;
 
 class BillingScreen extends StatefulWidget {
   const BillingScreen({super.key});
@@ -13,6 +18,38 @@ class BillingScreen extends StatefulWidget {
 }
 
 class _BillingScreenState extends State<BillingScreen> {
+  int userId = 0;
+  List cardList = [];
+
+  getId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int? id = prefs.getInt('id');
+
+    setState(() {
+      userId = id!;
+    });
+  }
+
+  getCardList() async {
+    await Future.delayed(const Duration(milliseconds: 10));
+    final response = await http.get(Uri.parse(
+        'https://smartcartapplication.azurewebsites.net/[CardController]/GetAllUserCard?userId=${userId.toString()}'));
+    if (mounted) {
+      setState(() {
+        if (response.body.isNotEmpty) {
+          cardList = json.decode(response.body);
+        }
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    getId();
+    getCardList();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,23 +60,34 @@ class _BillingScreenState extends State<BillingScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 76),
-              child: (billing["1"]!.isNotEmpty)
+              child: (cardList.isNotEmpty)
                   ? ListView.builder(
                       shrinkWrap: true,
-                      itemCount: billing["1"]!.length,
+                      itemCount: cardList.length,
                       padding:
                           const EdgeInsets.only(left: 32, right: 32, top: 24),
                       itemBuilder: (BuildContext context, int index) {
                         return Column(
                           children: [
                             BillingWidget(
-                              state: billing["1"]![index]["billingSetting"],
-                              cardnumber: "${billing["1"]![index]["card"]}",
-                              onTap: () {
-                                setState(() {
-                                  billing["1"]!.removeAt(index);
-                                  Navigator.pop(context);
-                                });
+                              state: cardList[index]["cardNameHolder"],
+                              cardnumber: cardList[index]["cardNumber"]
+                                  .toString()
+                                  .substring(
+                                      cardList[index]["cardNumber"].length - 4),
+                              onTap: ()  {
+                                deleteCard(cardList[index]["paymentCardId"]
+                                    .toString());
+                               
+                                // final response = await http.get(Uri.parse(
+                                //     'https://smartcartapplication.azurewebsites.net/[CardController]/GetAllUserCard?userId=${userId.toString()}'));
+                                // if (mounted) {
+                                //   setState(() {
+                                //     if (response.body.isNotEmpty) {
+                                //       cardList = json.decode(response.body);
+                                //     }
+                                //   });
+                                // }
                               },
                             ),
                             const SizedBox(
@@ -61,7 +109,9 @@ class _BillingScreenState extends State<BillingScreen> {
                 ),
                 child: MaterialButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, "addcard");
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const AddCard(),
+                      ));
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
