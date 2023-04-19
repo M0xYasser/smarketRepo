@@ -1,7 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smarket_app/presentation/screens/create_account.dart';
+import '../../data/models/get_info.dart';
+import '../../data/repository/get_signin.dart';
 import '../widgets/background.dart';
 import 'email_otp.dart';
 import 'homeScreen.dart';
@@ -13,22 +17,29 @@ class SignIn extends StatefulWidget {
   State<SignIn> createState() => _SignInState();
 }
 
-Future<void> saveUserCredentials(
-    String? email, String? password, int? id) async {
+Future<void> saveUserCredentials(String? email, int? id) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString('email', email!);
-  await prefs.setString('password', password!);
   await prefs.setInt('id', id!);
 }
 
 class _SignInState extends State<SignIn> {
   var emailController = TextEditingController();
-
   var passwordController = TextEditingController();
-
   var formKey = GlobalKey<FormState>();
-
   bool password = true;
+
+  isSignin() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    int isSign = 1;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('isSign', isSign);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -198,20 +209,25 @@ class _SignInState extends State<SignIn> {
                 ),
                 child: MaterialButton(
                     onPressed: () async {
-                      // GetSignIn data = await signIn(
-                      //  emailController.text.toString(),
-                      //  passwordController.text.toString(),
-                      //  );
-                      //  String? email = data.email;
-                      //  String? password = data.password;
-                      //  int? id = data.id;
+                      GetInfo data = await signin(
+                        emailController.text.toString(),
+                        passwordController.text.toString(),
+                      );
+                      String? state = data.success;
+                      int? id = data.id;
 
-                      //  print(email);
-                      //  saveUserCredentials(email, password, id);
-
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const Home(),
-                      ));
+                      saveUserCredentials(emailController.text.toString(), id);
+                      if (state == "True") {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const Home(),
+                        ));
+                        isSignin();
+                      } else {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text("Oops, this process failed"),
+                        ));
+                      }
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -242,38 +258,8 @@ class _SignInState extends State<SignIn> {
           const SizedBox(
             height: 08.0,
           ),
-          const Text(
-            '— OR —',
-            style: TextStyle(
-              fontFamily: "harabaraBold",
-              fontSize: 12,
-              color: Colors.grey,
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                child: InkWell(
-                  onTap: () {},
-                  child: SvgPicture.asset(
-                    'assets/icons/Facebook.svg',
-                  ),
-                ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                child: InkWell(
-                  onTap: () {},
-                  child: SvgPicture.asset(
-                    'assets/icons/Google.svg',
-                  ),
-                ),
-              ),
-            ],
+          const SizedBox(
+            height: 20,
           ),
           const Text(
             'Do you still not have an account?',

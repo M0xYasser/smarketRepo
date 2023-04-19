@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smarket_app/presentation/screens/sign_in.dart';
 
 import '../screens/homeScreen.dart';
 
@@ -71,10 +72,19 @@ class BackGround extends StatelessWidget {
                           width: 24,
                         ),
                         InkWell(
-                          onTap: () => Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(
-                            builder: (context) => const Home(),
-                          )),
+                          onTap: () {
+                            closeScreen == "home"
+                                ? Navigator.of(context)
+                                    .pushReplacement(MaterialPageRoute(
+                                    builder: (context) => const Home(),
+                                  ))
+                                : closeScreen == "signin"
+                                    ? Navigator.of(context)
+                                        .pushReplacement(MaterialPageRoute(
+                                        builder: (context) => const SignIn(),
+                                      ))
+                                    : null;
+                          },
                           child: SvgPicture.asset(
                             "assets/icons/Close.svg",
                           ),

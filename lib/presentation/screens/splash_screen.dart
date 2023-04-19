@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smarket_app/presentation/screens/sign_in.dart';
 
+import 'homeScreen.dart';
 import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,11 +15,14 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   int? isviewed;
+  int? isSign;
   getIsViewed() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
       isviewed = prefs.getInt('onBoard');
+      isSign = prefs.getInt('isSign');
+      // print(isSign);
     });
   }
 
@@ -45,7 +49,9 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
           showLoader: false,
           navigator: ((isviewed?.toInt()) == 1)
-              ? const SignIn()
+              ? ((isSign?.toInt()) == 1)
+                  ? const Home()
+                  : const SignIn()
               : const OnboardingScreen(),
           durationInSeconds: 2,
         ),

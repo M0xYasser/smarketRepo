@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../data/models/get_create_account.dart';
+import '../../data/models/get_info.dart';
 import '../../data/repository/post_account.dart';
 import '../widgets/background.dart';
 import 'homeScreen.dart';
@@ -16,13 +16,10 @@ class CreateAccount extends StatefulWidget {
   State<CreateAccount> createState() => _CreateAccount();
 }
 
-Future<void> saveUserCredentials(
-    String? username, String? email, String? password, int? id) async {
+Future<void> saveUserCredentials(int? id) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('username', username!);
-  await prefs.setString('email', email!);
+
   await prefs.setInt('id', id!);
-  await prefs.setString('password', password!);
 }
 
 class _CreateAccount extends State<CreateAccount> {
@@ -35,6 +32,12 @@ class _CreateAccount extends State<CreateAccount> {
   var formKey = GlobalKey<FormState>();
 
   bool password = true;
+  isSignin() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    int isSign = 1;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('isSign', isSign);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -217,7 +220,7 @@ class _CreateAccount extends State<CreateAccount> {
                   ),
                   child: MaterialButton(
                       onPressed: () async {
-                        GetCreateAccount data = await createAccount(
+                        GetInfo data = await createAccount(
                           usernameController.text.toString(),
                           emailController.text.toString(),
                           passwordController.text.toString(),
@@ -225,21 +228,20 @@ class _CreateAccount extends State<CreateAccount> {
                         int? id = data.id;
                         // print("-------------$id--------------");
                         // print("-------------${data.success}--------------");
-                        saveUserCredentials(
-                            usernameController.text.toString(),
-                            emailController.text.toString(),
-                            passwordController.text.toString(),
-                            id);
+                        saveUserCredentials(id);
 
-                        data.success == "true"
-                            ? Navigator.of(context)
-                                .pushReplacement(MaterialPageRoute(
-                                builder: (context) => const Home(),
-                              ))
-                            : ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                                content: Text("Oops, this process failed"),
-                              ));
+                        if (data.success == "True") {
+                          Navigator.of(context)
+                              .pushReplacement(MaterialPageRoute(
+                            builder: (context) => const Home(),
+                          ));
+                          isSignin();
+                        } else {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("Oops, this process failed"),
+                          ));
+                        }
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -275,31 +277,6 @@ class _CreateAccount extends State<CreateAccount> {
               fontSize: 12,
               color: Colors.grey,
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                child: InkWell(
-                  onTap: () {},
-                  child: SvgPicture.asset(
-                    'assets/icons/Facebook.svg',
-                  ),
-                ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                child: InkWell(
-                  onTap: () {},
-                  child: SvgPicture.asset(
-                    'assets/icons/Google.svg',
-                  ),
-                ),
-              ),
-            ],
           ),
         ],
       )

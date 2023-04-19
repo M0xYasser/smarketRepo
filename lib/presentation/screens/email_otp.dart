@@ -3,9 +3,12 @@
 import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smarket_app/presentation/screens/reset_password.dart';
 
 import '../../core/constants/constant.dart';
+import '../../data/models/get_home.dart';
+import '../../data/repository/get_home.dart';
 import '../widgets/background.dart';
 
 class EmailOtp extends StatefulWidget {
@@ -19,12 +22,30 @@ class EmailOtp extends StatefulWidget {
 class _EmailOTPState extends State<EmailOtp> {
   EmailOTP myauth = EmailOTP();
   dynamic pin;
+
+  String userEmail = " ";
+  getUseInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int? id = prefs.getInt('id');
+    GetHome data = await homeInfo(id!);
+    setState(() {
+      userEmail = data.userEmail!;
+      // print(userEmail);
+      sendOTP();
+    });
+  }
+
+  @override
+  initState() {
+    super.initState();
+    getUseInfo();
+  }
+
   sendOTP() async {
     myauth.setConfig(
-        //TODO : User email
-        appEmail: "midyass17@gmail.com",
+        appEmail: "Smarket@App",
         appName: "Smarket App",
-        userEmail: "3c4b43179b@boxmail.lol",
+        userEmail: userEmail,
         otpLength: 5,
         otpType: OTPType.digitsOnly);
     if (await myauth.sendOTP() == true) {
@@ -39,16 +60,9 @@ class _EmailOTPState extends State<EmailOtp> {
   }
 
   @override
-  void initState() {
-    sendOTP();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BackGround(
       close: true,
-      // TODO : close screen
       closeScreen: "home",
       children: [
         Image.asset(

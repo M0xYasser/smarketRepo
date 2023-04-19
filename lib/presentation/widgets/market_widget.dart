@@ -101,7 +101,7 @@ class MarketWidget extends StatelessWidget {
                   const SizedBox(
                     width: 24,
                   ),
-                  Image.asset(
+                  Image.network(
                     pic,
                     height: 80,
                     width: 70,

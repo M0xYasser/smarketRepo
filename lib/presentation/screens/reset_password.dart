@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smarket_app/data/repository/put_account_settings_repo.dart';
 import '../widgets/label.dart';
 
 import '../../core/constants/constant.dart';
 import '../widgets/background.dart';
+import 'homeScreen.dart';
 
 class ResetPassword extends StatefulWidget {
   ResetPassword({super.key});
@@ -15,7 +18,24 @@ class ResetPassword extends StatefulWidget {
 }
 
 class _ResetPasswordState extends State<ResetPassword> {
-  bool pass = true;
+  int userId = 0;
+  getUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int? id = prefs.getInt('id');
+
+    setState(() {
+      userId = id!;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserId();
+  }
+
+  bool pass1 = true;
+  bool pass2 = true;
 
   @override
   Widget build(BuildContext context) {
@@ -43,15 +63,16 @@ class _ResetPasswordState extends State<ResetPassword> {
         Label(
           suffixIcon: IconButton(
             icon: Icon(
-              pass ? Icons.visibility_off : Icons.visibility,
+              pass1 ? Icons.visibility_off : Icons.visibility,
+              color: Colors.grey,
             ),
             onPressed: () {
               setState(() {
-                pass = !pass;
+                pass1 = !pass1;
               });
             },
           ),
-          obscureText: pass,
+          obscureText: pass1,
           labelText: "New Password",
           icon: "lock",
           controller: widget.newPassword,
@@ -63,19 +84,41 @@ class _ResetPasswordState extends State<ResetPassword> {
           height: 20,
         ),
         Label(
+          suffixIcon: IconButton(
+            icon: Icon(
+              pass2 ? Icons.visibility_off : Icons.visibility,
+              color: Colors.grey,
+            ),
+            onPressed: () {
+              setState(() {
+                pass2 = !pass2;
+              });
+            },
+          ),
+          obscureText: pass2,
           labelText: "Re Password",
           icon: "reset",
           controller: widget.rePassword,
           height: 48,
           width: 280,
-          keyboardType: TextInputType.text,
-          obscureText: false,
+          keyboardType: TextInputType.visiblePassword,
         ),
         const SizedBox(
           height: 22,
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            if (widget.rePassword.text == widget.newPassword.text) {
+              putPassword(userId, widget.newPassword.text.toString());
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const Home(),
+              ));
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Oops, Password does not match"),
+              ));
+            }
+          },
           child: Container(
               width: 220,
               padding: const EdgeInsets.fromLTRB(16, 9, 16, 9),

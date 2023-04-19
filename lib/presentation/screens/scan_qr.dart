@@ -1,7 +1,9 @@
 import 'dart:developer';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smarket_app/data/repository/auth_qr.dart';
+import '../../data/models/get_msg.dart';
 import 'cart_produt.dart';
 import 'not_found_qr.dart';
 
@@ -13,9 +15,29 @@ class ScanQRCode extends StatefulWidget {
 }
 
 class ScanQRCodeState extends State<ScanQRCode> {
+  saveQr(String qr) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('qr', qr);
+  }
+
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  int userId = 0;
+  getUseId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int? id = prefs.getInt('id');
+    setState(() {
+      userId = id!;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUseId();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +45,19 @@ class ScanQRCodeState extends State<ScanQRCode> {
       body: Column(
         children: <Widget>[
           Expanded(flex: 10, child: _buildQrView(context)),
-          if (result != null && result!.code == "test")
-            InkWell(
-              onTap: () {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const CartProduct1(),
-                ));
-              },
-              child: Text(
-                  'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}'),
-            )
-          else
-            const Text('Scan a code'),
+
+          // if (result != null && result!.code == "test")
+          //   InkWell(
+          //     onTap: () {
+          // Navigator.of(context).pushReplacement(MaterialPageRoute(
+          //   builder: (context) => const CartProduct1(),
+          // ));
+          //     },
+          //     child: Text(
+          //         'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}'),
+          //   )
+          // else
+          //   const Text('Scan a code'),
         ],
       ),
     );
@@ -65,8 +88,20 @@ class ScanQRCodeState extends State<ScanQRCode> {
       this.controller = controller;
     });
     controller.scannedDataStream.listen((scanData) {
-      setState(() {
+      setState(() async {
         result = scanData;
+        GetMsg data = await authQr(result!.code.toString(), userId);
+        if (data.message == "Account connected Successfully!") {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => const CartProduct1(),
+          ));
+          saveQr(result!.code.toString());
+          print(result!.code.toString());
+        } else {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => const NotFoundCode(),
+          ));
+        }
       });
     });
   }

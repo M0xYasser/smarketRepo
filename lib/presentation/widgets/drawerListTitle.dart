@@ -35,7 +35,7 @@ class DrawerListTitle extends StatelessWidget {
                       : (toScreen == "support")
                           ? const Support()
                           : (toScreen == "setting")
-                              ? const AccountSetting()
+                              ? AccountSetting()
                               : const BillingScreen(),
                 ))),
           leading: SvgPicture.asset("assets/icons/$icon.svg"),

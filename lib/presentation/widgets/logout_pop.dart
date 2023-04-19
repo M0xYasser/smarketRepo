@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smarket_app/presentation/screens/sign_in.dart';
 import '../../core/constants/constant.dart';
+
+Future<void> logOut() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  await prefs.setInt('isSign', 0);
+}
 
 Future openDialog(BuildContext context) => showDialog(
     context: context,
@@ -70,7 +77,7 @@ Future openDialog(BuildContext context) => showDialog(
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context, rootNavigator: true).pop('dialog');
-
+                      logOut();
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (context) => const SignIn(),
                       ));

@@ -2,19 +2,13 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../models/get_create_account.dart';
+import '../models/get_info.dart';
 
-Future<GetCreateAccount> createAccount(
+Future<GetInfo> createAccount(
     String userName, String email, String password) async {
   final response = await http.post(Uri.parse(
       'https://smartcartapplication.azurewebsites.net/[AccountController]/CreateAccount?userName=$userName&email=$email&password=$password'));
-  return GetCreateAccount.fromJson(jsonDecode(response.body));
-  // print(response.statusCode);
-  // if (response.statusCode == 200) {
-  //   return Account.fromJson(jsonDecode(response.body));
-  // } else {
-  //   throw Exception('Failed to create Account.');
-  // }
+  return GetInfo.fromJson(jsonDecode(response.body));
 }
 
 // Future<GetSignIn> signIn(String email, String password) async {

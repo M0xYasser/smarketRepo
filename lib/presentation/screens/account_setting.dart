@@ -1,18 +1,18 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, avoid_types_as_parameter_names, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smarket_app/core/constants/constant.dart';
-import 'package:smarket_app/data/controller/account_setting_controller.dart';
 import 'package:smarket_app/presentation/widgets/customAppBar.dart';
-
-import 'dart:convert';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
+
+import '../../data/models/get_home.dart';
+import '../../data/repository/get_home.dart';
+import '../../data/repository/put_account_settings_repo.dart';
+import 'email_otp.dart';
 
 class AccountSetting extends StatefulWidget {
   File? pickedFile;
@@ -37,22 +37,25 @@ class _AccountSettingState extends State<AccountSetting> {
   bool isEditing = true;
   bool isDisableBtn = true;
   Color buttonColor = Colors.grey;
+  Color txtColor = Colors.grey;
   TextEditingController controller = TextEditingController();
 
   final namecontroller = TextEditingController(text: "Your initial value");
   String userName = "";
   String userEmail = "";
   String labelName = "userName";
+  int userId = 0;
 
   getUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? username = prefs.getString('username');
-    final String? email = prefs.getString('email');
+    final int? id = prefs.getInt('id');
+    GetHome data = await homeInfo(id!);
 
     setState(() {
-      userName = username!;
-      userEmail = email!;
+      userName = data.userName!;
+      userEmail = data.userEmail!;
       labelName = userName;
+      userId = id;
     });
   }
 
@@ -141,9 +144,9 @@ class _AccountSettingState extends State<AccountSetting> {
                         obscureText: false,
                         focusNode: nameFocusNode,
                         onFieldSubmitted: (Value) {},
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontFamily: "harabaraBold",
-                            color: Color(0xff333333),
+                            color: txtColor,
                             fontSize: 18),
                         decoration: InputDecoration(
                           labelText: labelName,
@@ -207,6 +210,7 @@ class _AccountSettingState extends State<AccountSetting> {
                         onTap: () {
                           setState(() {
                             isEditing = false;
+                            txtColor = const Color(0xff333333);
                             buttonColor = myDarkGreen;
                             labelName = "Name";
                             nameController.text = userName;
@@ -353,7 +357,11 @@ class _AccountSettingState extends State<AccountSetting> {
                       width: 24,
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => EmailOtp(),
+                        ));
+                      },
                       style: TextButton.styleFrom(
                         foregroundColor: const Color(0xff2C6976), // Te
                       ),
@@ -442,7 +450,13 @@ class _AccountSettingState extends State<AccountSetting> {
                     onPressed: (isDisableBtn)
                         ? null
                         : () {
-                            print(nameController.text);
+                            putName(userId, nameController.text);
+                            setState(() {
+                              isDisableBtn = true;
+                              isEditing = true;
+                              buttonColor = Colors.grey;
+                              txtColor = Colors.grey;
+                            });
                           },
                     height: 50.0,
                     child: Text(

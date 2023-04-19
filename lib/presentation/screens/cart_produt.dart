@@ -1,9 +1,11 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:smarket_app/data/models/product_details.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smarket_app/presentation/screens/save_money.dart';
 import 'package:smarket_app/presentation/screens/search.dart';
-
 import '../widgets/market_widget.dart';
 import 'homeScreen.dart';
 import 'market_empty.dart';
@@ -151,6 +153,43 @@ class CartProduct1State extends State<CartProduct1> {
               )
             ]),
       );
+
+  List productList = [];
+  getProductsList() async {
+    final response = await http.get(Uri.parse(
+        'https://smartcartapplication.azurewebsites.net/Product/GetProductCart?cartId=$userqr&userId=${userId.toString()}'));
+    if (mounted) {
+      setState(() {
+        if (response.body.isNotEmpty) {
+          productList = json.decode(response.body);
+          print(productList);
+        }
+      });
+    }
+  }
+
+  int userId = 0;
+  String userqr = "";
+  getUseId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int? id = prefs.getInt('id');
+    String? qr = prefs.getString('qr');
+    setState(() {
+      userId = id!;
+      userqr = qr!;
+    });
+  }
+
+  @override
+  void initState() {
+    getUseId();
+    var timer = Timer.periodic(Duration(seconds: 3), (timer) {
+      getProductsList();
+      print("qr1-----$userqr------");
+      print("userId1-----${userId.toString()}------");
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -391,7 +430,7 @@ class CartProduct1State extends State<CartProduct1> {
                     );
                   },
                   child: Row(children: <Widget>[
-                    SvgPicture.asset("assets/icons/search.svg"),
+                    // SvgPicture.asset("assets/icons/search.svg"),
                   ]),
                 )
               ],
@@ -450,19 +489,18 @@ class CartProduct1State extends State<CartProduct1> {
           ]),
           Padding(
             padding: const EdgeInsets.only(top: 50),
-            child: (products["1"]!.isNotEmpty)
+            child: (productList.isNotEmpty)
                 ? ListView.builder(
-                    itemCount: products["1"]!.length,
+                    itemCount: productList.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Column(
                         children: [
                           MarketWidget(
-                            pic: "${products["1"]![index]["pic"]}",
-                            productName:
-                                "${products["1"]![index]["productName"]}",
-                            size: "${products["1"]![index]["size"]}",
-                            price: "${products["1"]![index]["price"]}",
-                            quantity: "${products["1"]![index]["quantity"]}",
+                            pic: "${productList[index]["productDetail"]}",
+                            productName: "${productList[index]["productName"]}",
+                            size: "${productList[index]["productName"]}",
+                            price: "${productList[index]["productPrice"]}",
+                            quantity: "${productList[index]["productAmount"]}",
                           )
                         ],
                       );
@@ -523,7 +561,7 @@ class CartProduct1State extends State<CartProduct1> {
                         ),
                         child: Center(
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () async {},
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 0),

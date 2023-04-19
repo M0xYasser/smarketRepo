@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:smarket_app/data/models/get_home.dart';
 import '../../core/constants/constant.dart';
-import '../../data/repository/post_account.dart';
+import '../../data/repository/get_home.dart';
 import '../widgets/drawerHeader.dart';
 import '../widgets/drawerListTitle.dart';
 import '../widgets/homeBtn.dart';
@@ -20,23 +20,24 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  String userName = " ";
+  String userEmail = " ";
+  int userId = 0;
+  getUseInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int? id = prefs.getInt('id');
+    GetHome data = await homeInfo(id!);
+    setState(() {
+      userName = data.userName!;
+      userEmail = data.userEmail!;
+      userId = id;
+    });
+  }
+
   @override
   initState() {
     super.initState();
-    createAccount("userName", "email", "password");
     getUseInfo();
-  }
-
-  String userName = " ";
-  String userEmail = " ";
-  getUseInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? username = prefs.getString('username');
-    final String? email = prefs.getString('email');
-    setState(() {
-      userName = username!;
-      userEmail = email!;
-    });
   }
 
   @override

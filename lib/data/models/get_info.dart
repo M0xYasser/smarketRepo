@@ -1,8 +1,8 @@
-class GetCreateAccount {
+class GetInfo {
   late final String? success;
   late final int? id;
 
-  GetCreateAccount.fromJson(Map<String, dynamic> json) {
+  GetInfo.fromJson(Map<String, dynamic> json) {
     success = json["success"];
     id = json["userId"];
   }
