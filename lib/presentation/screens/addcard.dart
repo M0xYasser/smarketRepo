@@ -1,6 +1,9 @@
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:universal_html/html.dart';
 import '../../data/repository/post_card.dart';
 import '../widgets/customAppBar.dart';
 import 'billingtscreen.dart';
@@ -34,6 +37,7 @@ class _AddCardState extends State<AddCard> {
     getId();
     super.initState();
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +67,7 @@ class _AddCardState extends State<AddCard> {
                 height: 48,
                 child: TextFormField(
                   controller: _cardHolderController,
+                  keyboardType: TextInputType.name,
                   style: const TextStyle(
                       fontFamily: "harabaraBold",
                       color: Color(0xff333333),
@@ -106,6 +111,12 @@ class _AddCardState extends State<AddCard> {
                 height: 48,
                 child: TextFormField(
                   controller: _cardNumberController,
+                  keyboardType: TextInputType.number,
+                  // validator: CardUtils.validateCardNum,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(19),
+                  ],
                   style: const TextStyle(
                       fontFamily: "harabaraBold",
                       color: Color(0xff333333),
@@ -149,12 +160,19 @@ class _AddCardState extends State<AddCard> {
                 height: 48,
                 child: TextFormField(
                   controller: _expirtationDateController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    
+                    LengthLimitingTextInputFormatter(5),
+                  ],
+                  //obscureText: NumberInputElement.supported,
                   style: const TextStyle(
                       fontFamily: "harabaraBold",
                       color: Color(0xff333333),
                       fontSize: 18),
                   decoration: InputDecoration(
                     labelText: 'Expriration Date',
+                    hintText: "MM/YY",
                     labelStyle: const TextStyle(
                         fontFamily: "harabaraBold",
                         color: Color(0xff2C6976),
@@ -192,6 +210,11 @@ class _AddCardState extends State<AddCard> {
                 height: 48,
                 child: TextFormField(
                   controller: _cvvController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(3),
+                  ],
                   style: const TextStyle(
                       fontFamily: "harabaraBold",
                       color: Color(0xff333333),
@@ -240,13 +263,14 @@ class _AddCardState extends State<AddCard> {
                   color: const Color(0xff2c6976),
                 ),
                 child: MaterialButton(
-                    onPressed: () {
+                    onPressed: () async {
                       createCard(
                           _cardHolderController.text.toString(),
                           _cardNumberController.text.toString(),
                           _expirtationDateController.text.toString(),
                           _cvvController.text.toString(),
                           userId.toString());
+                      await Future.delayed(const Duration(seconds: 1));
 
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (context) => const BillingScreen(),

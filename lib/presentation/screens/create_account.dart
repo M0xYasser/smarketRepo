@@ -226,8 +226,8 @@ class _CreateAccount extends State<CreateAccount> {
                           passwordController.text.toString(),
                         );
                         int? id = data.id;
-                        print("-------------$id--------------");
-                        print("-------------${data.success}--------------");
+                        // print("-------------$id--------------");
+                        // print("-------------${data.success}--------------");
                         saveUserCredentials(id);
 
                         if (data.success == "True") {

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smarket_app/presentation/screens/addcard.dart';
-import '../../data/repository/delete_card.dart';
 import '../widgets/billingwidget.dart';
 import '../widgets/customAppBar.dart';
 import 'emptycard.dart';
@@ -32,7 +31,7 @@ class _BillingScreenState extends State<BillingScreen> {
   }
 
   getCardList() async {
-    await Future.delayed(const Duration(milliseconds: 10));
+    await Future.delayed(const Duration(milliseconds: 30));
     final response = await http.get(Uri.parse(
         'https://smartcartapplication.azurewebsites.net/[CardController]/GetAllUserCard?userId=${userId.toString()}'));
     if (mounted) {
@@ -59,7 +58,7 @@ class _BillingScreenState extends State<BillingScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 76),
+              padding: const EdgeInsets.only(top: 70),
               child: (cardList.isNotEmpty)
                   ? ListView.builder(
                       shrinkWrap: true,

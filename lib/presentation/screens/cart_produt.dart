@@ -162,7 +162,6 @@ class CartProduct1State extends State<CartProduct1> {
       setState(() {
         if (response.body.isNotEmpty) {
           productList = json.decode(response.body);
-          print(productList);
         }
       });
     }
@@ -183,10 +182,10 @@ class CartProduct1State extends State<CartProduct1> {
   @override
   void initState() {
     getUseId();
-    var timer = Timer.periodic(Duration(seconds: 3), (timer) {
+    Timer.periodic(const Duration(seconds: 3), (timer) {
       getProductsList();
-      print("qr1-----$userqr------");
-      print("userId1-----${userId.toString()}------");
+      // print("qr1-----$userqr------");
+      // print("userId1-----${userId.toString()}------");
     });
     super.initState();
   }
@@ -429,7 +428,7 @@ class CartProduct1State extends State<CartProduct1> {
                       },
                     );
                   },
-                  child: Row(children: <Widget>[
+                  child: Row(children: const <Widget>[
                     // SvgPicture.asset("assets/icons/search.svg"),
                   ]),
                 )

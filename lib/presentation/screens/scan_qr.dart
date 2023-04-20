@@ -96,7 +96,7 @@ class ScanQRCodeState extends State<ScanQRCode> {
             builder: (context) => const CartProduct1(),
           ));
           saveQr(result!.code.toString());
-          print(result!.code.toString());
+          // print(result!.code.toString());
         } else {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => const NotFoundCode(),

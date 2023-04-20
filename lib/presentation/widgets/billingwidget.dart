@@ -132,6 +132,7 @@ class BillingWidget extends StatelessWidget {
                                         onTap: () {
                                           deleteCard(cardId);
                                           Navigator.pop(context);
+
                                           Navigator.of(context).pushReplacement(
                                               MaterialPageRoute(
                                             builder: (context) =>

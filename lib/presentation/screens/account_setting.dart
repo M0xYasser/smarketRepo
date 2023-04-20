@@ -62,7 +62,7 @@ class _AccountSettingState extends State<AccountSetting> {
   @override
   void initState() {
     getUserName();
-    
+
     super.initState();
   }
 
@@ -116,6 +116,7 @@ class _AccountSettingState extends State<AccountSetting> {
                               'assets/icons/add.svg',
                             ),
                             onTap: () {
+                              // TODO : SELECT PHOTO
                               takePhoto(ImageSource.gallery);
 
                               /*showModalBottomSheet(
@@ -142,8 +143,7 @@ class _AccountSettingState extends State<AccountSetting> {
                       child: TextFormField(
                         keyboardType: TextInputType.text,
                         controller: nameController,
-                        obscureText: false,
-                        focusNode: nameFocusNode,
+                        showCursor: false,
                         onFieldSubmitted: (Value) {},
                         style: TextStyle(
                             fontFamily: "harabaraBold",
@@ -568,9 +568,9 @@ class _AccountSettingState extends State<AccountSetting> {
         await widget.imagePicker.pickImage(source: source, imageQuality: 100);
 
     widget.pickedFile = File(pickedImage!.path);
-    //accountSettingController.setProfileImagePath(pickedFile!.path);
+    // accountSettingController.setProfileImagePath(pickedFile!.path);
 
     Get.back();
-    //print(widget.pickedFile);
+    print(widget.pickedFile);
   }
 }
