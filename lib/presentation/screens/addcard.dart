@@ -240,7 +240,7 @@ class _AddCardState extends State<AddCard> {
                   color: const Color(0xff2c6976),
                 ),
                 child: MaterialButton(
-                    onPressed: ()  {
+                    onPressed: () {
                       createCard(
                           _cardHolderController.text.toString(),
                           _cardNumberController.text.toString(),
@@ -253,7 +253,7 @@ class _AddCardState extends State<AddCard> {
                       ));
                     },
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(4.0),
                       child: Row(
                         children: [
                           SvgPicture.asset('assets/icons/credit_card.svg'),

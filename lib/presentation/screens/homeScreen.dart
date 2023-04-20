@@ -19,10 +19,11 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
+String userName = " ";
+String userEmail = " ";
+int userId = 0;
+
 class _HomeState extends State<Home> {
-  String userName = " ";
-  String userEmail = " ";
-  int userId = 0;
   getUseInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final int? id = prefs.getInt('id');

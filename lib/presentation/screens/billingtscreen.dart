@@ -17,9 +17,10 @@ class BillingScreen extends StatefulWidget {
   State<BillingScreen> createState() => _BillingScreenState();
 }
 
+List cardList = [];
+
 class _BillingScreenState extends State<BillingScreen> {
   int userId = 0;
-  List cardList = [];
 
   getId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -36,9 +37,7 @@ class _BillingScreenState extends State<BillingScreen> {
         'https://smartcartapplication.azurewebsites.net/[CardController]/GetAllUserCard?userId=${userId.toString()}'));
     if (mounted) {
       setState(() {
-        if (response.body.isNotEmpty) {
-          cardList = json.decode(response.body);
-        }
+        cardList = json.decode(response.body);
       });
     }
   }
@@ -46,6 +45,7 @@ class _BillingScreenState extends State<BillingScreen> {
   @override
   void initState() {
     getId();
+
     getCardList();
     super.initState();
   }
@@ -75,20 +75,8 @@ class _BillingScreenState extends State<BillingScreen> {
                                   .toString()
                                   .substring(
                                       cardList[index]["cardNumber"].length - 4),
-                              onTap: ()  {
-                                deleteCard(cardList[index]["paymentCardId"]
-                                    .toString());
-                               
-                                // final response = await http.get(Uri.parse(
-                                //     'https://smartcartapplication.azurewebsites.net/[CardController]/GetAllUserCard?userId=${userId.toString()}'));
-                                // if (mounted) {
-                                //   setState(() {
-                                //     if (response.body.isNotEmpty) {
-                                //       cardList = json.decode(response.body);
-                                //     }
-                                //   });
-                                // }
-                              },
+                              cardId:
+                                  cardList[index]["paymentCardId"].toString(),
                             ),
                             const SizedBox(
                               height: 24,
@@ -114,7 +102,7 @@ class _BillingScreenState extends State<BillingScreen> {
                       ));
                     },
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(4.0),
                       child: Row(
                         children: [
                           SvgPicture.asset('assets/icons/credit_card.svg'),

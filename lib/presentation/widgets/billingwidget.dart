@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/constants/constant.dart';
+import '../../data/repository/delete_card.dart';
+import '../screens/billingtscreen.dart';
 
 class BillingWidget extends StatelessWidget {
-  final String state, cardnumber;
-  final void Function() onTap;
+  final String state, cardnumber, cardId;
 
   const BillingWidget({
     super.key,
     required this.state,
     required this.cardnumber,
-    required this.onTap,
+    required this.cardId,
   });
 
   @override
@@ -129,8 +130,13 @@ class BillingWidget extends StatelessWidget {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          onTap;
+                                          deleteCard(cardId);
                                           Navigator.pop(context);
+                                          Navigator.of(context).pushReplacement(
+                                              MaterialPageRoute(
+                                            builder: (context) =>
+                                                const BillingScreen(),
+                                          ));
                                         },
                                         child: Container(
                                           height: 36,
