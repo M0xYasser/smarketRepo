@@ -20,6 +20,7 @@ class CustomDrawerHeader extends StatelessWidget {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             CircleAvatar(
+              backgroundColor: Colors.white,
               radius: 32,
               backgroundImage: AssetImage(imageUrl),
             ),

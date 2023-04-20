@@ -57,7 +57,8 @@ class _HomeState extends State<Home> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomDrawerHeader(
-              imageUrl: "assets/images/person.jpg",
+            //TODO: USER IMG
+              imageUrl: "assets/images/person.png",
               name: userName,
               email: userEmail),
           const DrawerListTitle(

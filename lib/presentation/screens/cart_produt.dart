@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smarket_app/presentation/screens/save_money.dart';
 import 'package:smarket_app/presentation/screens/search.dart';
+import 'package:smarket_app/presentation/screens/select_card.dart';
 import '../widgets/market_widget.dart';
 import 'homeScreen.dart';
 import 'market_empty.dart';
@@ -560,7 +561,9 @@ class CartProduct1State extends State<CartProduct1> {
                         ),
                         child: Center(
                           child: InkWell(
-                            onTap: () async {},
+                            onTap: (){Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const SelectCard(),
+                      ));},
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 0),

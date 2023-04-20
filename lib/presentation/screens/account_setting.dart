@@ -94,8 +94,8 @@ class _AccountSettingState extends State<AccountSetting> {
                                   true
                               ? FileImage(file(accountSettingController
                                   .profilePicPath.value)) as ImageProvider*/
-
-                          image: AssetImage('assets/images/person.jpg'),
+// TODO : USER IMG
+                          image: AssetImage('assets/images/person.png'),
                         ),
                       ),
                     ),
