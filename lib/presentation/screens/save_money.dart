@@ -2,13 +2,37 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smarket_app/data/repository/save_money.dart';
 import '../../core/constants/constant.dart';
-import '../../core/constants/money_value.dart';
-import '../widgets/customAppBar.dart';
+import '../widgets/customAppBar2.dart';
 import '../widgets/label.dart';
+import 'cart_produt.dart';
 
-class SaveMoney extends StatelessWidget {
+class SaveMoney extends StatefulWidget {
   const SaveMoney({super.key});
+
+  @override
+  State<SaveMoney> createState() => _SaveMoneyState();
+}
+
+class _SaveMoneyState extends State<SaveMoney> {
+  int userId = 0;
+
+  getId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int? id = prefs.getInt('id');
+
+    setState(() {
+      userId = id!;
+    });
+  }
+
+  @override
+  void initState() {
+    getId();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +40,7 @@ class SaveMoney extends StatelessWidget {
     final moneyText = TextEditingController();
     return Scaffold(
       backgroundColor: Colors.white,
-      body: CustomAppBar(
+      body: CustomAppBar2(
         title: 'Save Money',
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Image.asset(
@@ -51,8 +75,10 @@ class SaveMoney extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  MoneyValue.setMoney("0");
-                  Navigator.pushReplacementNamed(context, "home");
+                  setMoney("0", userId.toString());
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const CartProduct1(),
+                  ));
                 },
                 child: Container(
                     padding: const EdgeInsets.fromLTRB(16, 9, 16, 9),
@@ -73,8 +99,12 @@ class SaveMoney extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  MoneyValue.setMoney(moneyText.text);
-                  Navigator.pushReplacementNamed(context, "home");
+                  // print("++++${moneyText.text.toString()}++++++");
+                  // print("++++${userId.toString()}++++++");
+                  setMoney(moneyText.text.toString(), userId.toString());
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const CartProduct1(),
+                  ));
                 },
                 child: Container(
                     padding: const EdgeInsets.fromLTRB(16, 9, 16, 9),

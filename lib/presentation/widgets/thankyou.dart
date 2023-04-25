@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
 import 'package:smarket_app/presentation/screens/homeScreen.dart';
 
 import '../../core/constants/constant.dart';

@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
     package="com.example.smarket_repo">
+     <uses-permission android:name="android.permission.INTERNET"/>
+
    <application
         android:label="smarket_repo"
         android:name="${applicationName}"

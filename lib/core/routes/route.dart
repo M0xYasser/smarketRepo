@@ -8,7 +8,6 @@ import '../../presentation/screens/invoices_screen.dart';
 import '../../presentation/screens/paymentscreen.dart';
 import '../../presentation/screens/create_account.dart';
 import '../../presentation/screens/support.dart';
-import '../../presentation/screens/testScreen.dart';
 import '../../presentation/screens/homeScreen.dart';
 import '../../presentation/screens/splash_screen.dart';
 
@@ -24,14 +23,4 @@ Map<String, Widget Function(BuildContext)> route = {
   "addcard": (context) => const AddCard(),
   "reset": (context) => ResetPassword(),
   "signin": (context) => const SignIn(),
-  // "email": (context) => EmailOtp(),
-  "signout": (context) => TestScreen(
-        text: "Sign Out",
-      ),
-  "Invoice": (context) => TestScreen(
-        text: "Invoice",
-      ),
-  "market": (context) => TestScreen(
-        text: "market",
-      ),
 };

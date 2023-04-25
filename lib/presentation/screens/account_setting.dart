@@ -571,6 +571,6 @@ class _AccountSettingState extends State<AccountSetting> {
     // accountSettingController.setProfileImagePath(pickedFile!.path);
 
     Get.back();
-    print(widget.pickedFile);
+    // print(widget.pickedFile);
   }
 }

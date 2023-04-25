@@ -4,19 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smarket_app/presentation/screens/select_card.dart';
 //import 'package:universal_html/html.dart';
 import '../../data/repository/post_card.dart';
 import '../widgets/customAppBar.dart';
-import 'billingtscreen.dart';
 
-class AddCard extends StatefulWidget {
-  const AddCard({Key? key}) : super(key: key);
+class SelectAddCard extends StatefulWidget {
+  const SelectAddCard({Key? key}) : super(key: key);
 
   @override
-  State<AddCard> createState() => _AddCardState();
+  State<SelectAddCard> createState() => _SelectAddCardState();
 }
 
-class _AddCardState extends State<AddCard> {
+class _SelectAddCardState extends State<SelectAddCard> {
   final TextEditingController _cardHolderController = TextEditingController();
   final TextEditingController _cardNumberController = TextEditingController();
   final TextEditingController _expirtationDateController =
@@ -272,7 +272,7 @@ class _AddCardState extends State<AddCard> {
                       await Future.delayed(const Duration(seconds: 1));
 
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const BillingScreen(),
+                        builder: (context) => const SelectCard(),
                       ));
                     },
                     child: Padding(
