@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable, avoid_types_as_parameter_names, non_constant_identifier_names
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -9,10 +10,13 @@ import 'package:smarket_app/presentation/widgets/customAppBar.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
+import '../../data/controller/account_setting_controller.dart';
 import '../../data/models/get_home.dart';
 import '../../data/repository/get_home.dart';
 import '../../data/repository/put_account_settings_repo.dart';
 import 'email_otp.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter/foundation.dart';
 
 class AccountSetting extends StatefulWidget {
   File? pickedFile;
@@ -26,8 +30,13 @@ class AccountSetting extends StatefulWidget {
 }
 
 class _AccountSettingState extends State<AccountSetting> {
-  //AccountSettingController accountSettingController = Get.put(AccountSettingController());
-  //AccountSettingController accountSettingController = Get.find();
+  // ignore: unused_field
+  // late PickedFile _imageFile;
+  // final ImagePicker _picker = ImagePicker();
+
+  AccountSettingController accountSettingController =
+      Get.put(AccountSettingController());
+  AccountSettingController accountSettingController2 = Get.find();
 
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
@@ -66,416 +75,477 @@ class _AccountSettingState extends State<AccountSetting> {
     super.initState();
   }
 
+  void pickUploadProfilePic() async {
+    final image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 512,
+      maxWidth: 512,
+      imageQuality: 90,
+    );
+
+    Reference ref = FirebaseStorage.instance.ref().child("profilepic.jpg");
+
+    await ref.putFile(File(image!.path));
+
+    ref.getDownloadURL().then((value) async {
+      setState(() {
+        //profilePicLink = value;
+      });
+    });
+  }
+
+  // final picker = ImagePicker();
+
+  // XFile? _image;
+
+  // XFile? get image => _image;
+
+  // Future pickGalleryImage(BuildContext context) async {
+  //   final PickedFile =
+  //       await picker.pickImage(source: ImageSource.gallery, imageQuality: 100);
+
+  //   if (PickedFile != null) {
+  //     _image = XFile(PickedFile.path);
+  //     //notifyListeners();
+  //   }
+  // }
+
+  final ImagePicker _picker = ImagePicker();
+   File? selectedImage;
+  getImage(ImageSource source) async {
+    final XFile? image = await _picker.pickImage(source: source);
+    if (image != null) {
+      selectedImage = File(image.path);
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomAppBar(
-        title: 'Account Settings',
-        child: ListView(
-          children: [
-            const SizedBox(
-              height: 50,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(40.0),
-              child: Center(
-                child: Stack(
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
+      body: Builder(builder: (context) {
+        return CustomAppBar(
+          title: 'Account Settings',
+          child: ListView(
+            children: [
+              const SizedBox(
+                height: 50,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(40.0),
+                child: Center(
+                  child: Stack(
+                    children: [
+                     
 
-                          /*image: accountSettingController
-                                      .isProfilePicPathSet.value ==
-                                  true
-                              ? FileImage(file(accountSettingController
-                                  .profilePicPath.value)) as ImageProvider*/
-// TODO : USER IMG
-                          image: AssetImage('assets/images/person.png'),
+                      // Obx(() => CircleAvatar(
+
+                      //   // ignore: unnecessary_null_comparison
+                      //   backgroundImage: _image == null ? null : FileImage(_image!),
+
+                      //   backgroundColor: Colors.white,
+                      //   radius: 55,
+                      // )),
+
+                      selectedImage == null? Container(
+                        width: 100,
+                        height: 100,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage('assets/images/person.png'),
+                          ),
+                        ),
+                      ): Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: FileImage(selectedImage!)
+                          )
                         ),
                       ),
-                    ),
-                    Positioned(
-                        bottom: 5,
-                        right: 0,
-                        child: Container(
-                          height: 24,
-                          width: 24,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor,
-                              )),
-                          child: InkWell(
-                            child: SvgPicture.asset(
-                              'assets/icons/add.svg',
-                            ),
-                            onTap: () {
-                              // TODO : SELECT PHOTO
-                              takePhoto(ImageSource.gallery);
-
-                              /*showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) => bottomSheet(context));*/
-                            },
-                          ),
-                        ))
-                  ],
+                      Positioned(
+                          bottom: 5,
+                          right: 0,
+                          child: Container(
+                            height: 24,
+                            width: 24,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color:
+                                      Theme.of(context).scaffoldBackgroundColor,
+                                )),
+                            child: GestureDetector(
+                                child: SvgPicture.asset(
+                                  'assets/icons/add.svg',
+                                ),
+                                onTap: () {
+                                  getImage(ImageSource.gallery);
+                                  setState(() {
+                              isDisableBtn = false;
+                            });
+                                }
+                                ),
+                          ))
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Stack(
-              alignment: AlignmentDirectional.centerEnd,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width - 48,
-                    height: 48,
-                    child: IgnorePointer(
-                      ignoring: isEditing,
-                      child: TextFormField(
-                        keyboardType: TextInputType.text,
-                        controller: nameController,
-                        showCursor: false,
-                        onFieldSubmitted: (Value) {},
-                        style: TextStyle(
-                            fontFamily: "harabaraBold",
-                            color: txtColor,
-                            fontSize: 18),
-                        decoration: InputDecoration(
-                          labelText: labelName,
-                          labelStyle: TextStyle(
+              Stack(
+                alignment: AlignmentDirectional.centerEnd,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 20),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width - 48,
+                      height: 48,
+                      child: IgnorePointer(
+                        ignoring: isEditing,
+                        child: TextFormField(
+                          keyboardType: TextInputType.text,
+                          controller: nameController,
+                          showCursor: false,
+                          onFieldSubmitted: (Value) {},
+                          style: TextStyle(
                               fontFamily: "harabaraBold",
-                              color: buttonColor,
+                              color: txtColor,
                               fontSize: 18),
-                          prefixIcon: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const SizedBox(
-                                width: 24,
-                              ),
-                              SvgPicture.asset(
-                                "assets/icons/solid_user.svg",
+                          decoration: InputDecoration(
+                            labelText: labelName,
+                            labelStyle: TextStyle(
+                                fontFamily: "harabaraBold",
                                 color: buttonColor,
-                              ),
-                              const SizedBox(
-                                width: 14,
-                              )
-                            ],
+                                fontSize: 18),
+                            prefixIcon: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(
+                                  width: 24,
+                                ),
+                                SvgPicture.asset(
+                                  "assets/icons/solid_user.svg",
+                                  color: buttonColor,
+                                ),
+                                const SizedBox(
+                                  width: 14,
+                                )
+                              ],
+                            ),
+                            /*suffixIcon: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const SizedBox(
+                                    width: 24,
+                                  ),
+                                  InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          isEditing = false;
+                                        });
+                                      },
+                                      child: SvgPicture.asset("assets/icons/edit.svg")),
+                                  const SizedBox(
+                                    width: 26,
+                                  )
+                                ],
+                              ),*/
+                            enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(width: 1.0, color: buttonColor),
+                                borderRadius: BorderRadius.circular(50.0)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(width: 1.0, color: buttonColor),
+                                borderRadius: BorderRadius.circular(50.0)),
                           ),
-                          /*suffixIcon: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const SizedBox(
-                                width: 24,
-                              ),
-                              InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      isEditing = false;
-                                    });
-                                  },
-                                  child: SvgPicture.asset("assets/icons/edit.svg")),
-                              const SizedBox(
-                                width: 26,
-                              )
-                            ],
-                          ),*/
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1.0, color: buttonColor),
-                              borderRadius: BorderRadius.circular(50.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1.0, color: buttonColor),
-                              borderRadius: BorderRadius.circular(50.0)),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(
-                      width: 24,
-                    ),
-                    InkWell(
-                        onTap: () {
-                          setState(() {
-                            isEditing = false;
-                            txtColor = const Color(0xff333333);
-                            buttonColor = myDarkGreen;
-                            labelName = "Name";
-                            nameController.text = userName;
-                            isDisableBtn = false;
-                          });
-                        },
-                        child: SvgPicture.asset("assets/icons/edit.svg")),
-                    const SizedBox(
-                      width: 48,
-                    )
-                  ],
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width - 48,
-                height: 48,
-                child: IgnorePointer(
-                  ignoring: true,
-                  child: TextFormField(
-                    keyboardType: TextInputType.text,
-                    controller: emailController,
-                    style: const TextStyle(
-                        fontFamily: "harabaraBold",
-                        color: Colors.grey,
-                        fontSize: 18),
-                    decoration: InputDecoration(
-                      labelText: userEmail,
-                      labelStyle: const TextStyle(
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(
+                        width: 24,
+                      ),
+                      InkWell(
+                          onTap: () {
+                            setState(() {
+                              isEditing = false;
+                              txtColor = const Color(0xff333333);
+                              buttonColor = myDarkGreen;
+                              labelName = "Name";
+                              nameController.text = userName;
+                              isDisableBtn = false;
+                            });
+                          },
+                          child: SvgPicture.asset("assets/icons/edit.svg")),
+                      const SizedBox(
+                        width: 48,
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width - 48,
+                  height: 48,
+                  child: IgnorePointer(
+                    ignoring: true,
+                    child: TextFormField(
+                      keyboardType: TextInputType.text,
+                      controller: emailController,
+                      style: const TextStyle(
                           fontFamily: "harabaraBold",
                           color: Colors.grey,
                           fontSize: 18),
-                      prefixIcon: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(
-                            width: 24,
-                          ),
-                          SvgPicture.asset(
-                            "assets/icons/email.svg",
+                      decoration: InputDecoration(
+                        labelText: userEmail,
+                        labelStyle: const TextStyle(
+                            fontFamily: "harabaraBold",
                             color: Colors.grey,
-                          ),
-                          const SizedBox(
-                            width: 14,
-                          )
-                        ],
+                            fontSize: 18),
+                        prefixIcon: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(
+                              width: 24,
+                            ),
+                            SvgPicture.asset(
+                              "assets/icons/email.svg",
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(
+                              width: 14,
+                            )
+                          ],
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                width: 1.0, color: Colors.grey),
+                            borderRadius: BorderRadius.circular(50.0)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                width: 1.0, color: Colors.grey),
+                            borderRadius: BorderRadius.circular(50.0)),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(width: 1.0, color: Colors.grey),
-                          borderRadius: BorderRadius.circular(50.0)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(width: 1.0, color: Colors.grey),
-                          borderRadius: BorderRadius.circular(50.0)),
                     ),
                   ),
                 ),
               ),
-            ),
-            Stack(
-              alignment: AlignmentDirectional.centerEnd,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width - 48,
-                    height: 48,
-                    child: IgnorePointer(
-                      ignoring: true,
-                      child: TextFormField(
-                        keyboardType: TextInputType.visiblePassword,
-                        controller: passwordController,
-                        obscureText: password,
-                        style: const TextStyle(
-                            fontFamily: "star",
-                            color: Colors.grey,
-                            fontSize: 18),
-                        decoration: InputDecoration(
-                          labelText: '***********',
-                          labelStyle: const TextStyle(
+              Stack(
+                alignment: AlignmentDirectional.centerEnd,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 20),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width - 48,
+                      height: 48,
+                      child: IgnorePointer(
+                        ignoring: true,
+                        child: TextFormField(
+                          keyboardType: TextInputType.visiblePassword,
+                          controller: passwordController,
+                          obscureText: password,
+                          style: const TextStyle(
                               fontFamily: "star",
                               color: Colors.grey,
                               fontSize: 18),
-                          prefixIcon: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const SizedBox(
-                                width: 24,
-                              ),
-                              SvgPicture.asset(
-                                "assets/icons/lock.svg",
+                          decoration: InputDecoration(
+                            labelText: '***********',
+                            labelStyle: const TextStyle(
+                                fontFamily: "star",
                                 color: Colors.grey,
-                              ),
-                              const SizedBox(
-                                width: 14,
-                              )
-                            ],
+                                fontSize: 18),
+                            prefixIcon: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(
+                                  width: 24,
+                                ),
+                                SvgPicture.asset(
+                                  "assets/icons/lock.svg",
+                                  color: Colors.grey,
+                                ),
+                                const SizedBox(
+                                  width: 14,
+                                )
+                              ],
+                            ),
+                            // suffixIcon: Row(
+                            // mainAxisSize: MainAxisSize.min,
+                            // children: [
+                            // const SizedBox(
+                            // width: 24,
+                            // ),
+                            // TextButton(
+                            // onPressed: () {},
+                            // style: TextButton.styleFrom(
+                            // foregroundColor:
+                            // const Color(0xff2C6976), // Text Color
+                            // ),
+                            // child: const Text(
+                            // 'Reset Password',
+                            // style: TextStyle(
+                            // fontFamily: "harabaraBold",
+                            // ),
+                            // ),
+                            // ),
+                            // const SizedBox(
+                            // width: 14,
+                            // )
+                            // ],
+                            // ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    width: 1.0, color: Colors.grey),
+                                borderRadius: BorderRadius.circular(50.0)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    width: 1.0, color: Colors.grey),
+                                borderRadius: BorderRadius.circular(50.0)),
                           ),
-                          // suffixIcon: Row(
-                          // mainAxisSize: MainAxisSize.min,
-                          // children: [
-                          // const SizedBox(
-                          // width: 24,
-                          // ),
-                          // TextButton(
-                          // onPressed: () {},
-                          // style: TextButton.styleFrom(
-                          // foregroundColor:
-                          // const Color(0xff2C6976), // Text Color
-                          // ),
-                          // child: const Text(
-                          // 'Reset Password',
-                          // style: TextStyle(
-                          // fontFamily: "harabaraBold",
-                          // ),
-                          // ),
-                          // ),
-                          // const SizedBox(
-                          // width: 14,
-                          // )
-                          // ],
-                          // ),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  width: 1.0, color: Colors.grey),
-                              borderRadius: BorderRadius.circular(50.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  width: 1.0, color: Colors.grey),
-                              borderRadius: BorderRadius.circular(50.0)),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(
-                      width: 24,
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => EmailOtp(),
-                        ));
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: const Color(0xff2C6976), // Te
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(
+                        width: 24,
                       ),
-                      child: const Text(
-                        'Reset Password',
-                        style: TextStyle(
-                          fontFamily: "harabaraBold",
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushReplacement(MaterialPageRoute(
+                            builder: (context) => EmailOtp(),
+                          ));
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: const Color(0xff2C6976), // Te
+                        ),
+                        child: const Text(
+                          'Reset Password',
+                          style: TextStyle(
+                            fontFamily: "harabaraBold",
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 48,
-                    )
-                  ],
-                ),
-              ],
-            ),
-            /*Padding(
-             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-             child: SizedBox(
-               width:  MediaQuery.of(context).size.width - 48,
-               height: 48,
-               child: TextFormField(
-                 style: const TextStyle(
-                     fontFamily: "harabaraBold",
-                     color: Color(0xff333333),
-                     fontSize: 18),
-                 decoration: InputDecoration(
-                   labelText: 'Language',
-                   labelStyle: const TextStyle(
-                       fontFamily: "harabaraBold",
-                       color: Color(0xff2C6976),
-                       fontSize: 18),
-                   prefixIcon: Row(
-                     mainAxisSize: MainAxisSize.min,
-                     children: [
-                       const SizedBox(
-                         width: 24,
-                       ),
-                       SvgPicture.asset("assets/icons/language.svg"),
-                       const SizedBox(
-                         width: 14,
-                       )
-                     ],
-                   ),
-                   suffixIcon: Row(
-                     mainAxisSize: MainAxisSize.min,
-                     children: [
-                       const SizedBox(
-                         width: 24,
-                       ),
-                       MaterialButton(
-                         onPressed: () {},
-                         child: SvgPicture.asset("assets/icons/down.svg"),
-                       ),
-                       const SizedBox(
-                         width: 0,
-                       )
-                     ],
-                   ),
-                   enabledBorder: OutlineInputBorder(
-                       borderSide: const BorderSide(
-                           width: 1.0,
-                           color: Color.fromARGB(255, 44, 105, 118)),
-                       borderRadius: BorderRadius.circular(50.0)),
-                   focusedBorder: OutlineInputBorder(
-                       borderSide: const BorderSide(
-                           width: 1.0,
-                           color: Color.fromARGB(255, 44, 105, 118)),
-                       borderRadius: BorderRadius.circular(50.0)),
-                 ),
-               ),
-             ),
-           ),*/
-            const SizedBox(
-              height: 24,
-            ),
-            Center(
-              child: Container(
-                height: 40,
-                width: 120,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(
-                    30.0,
+                      const SizedBox(
+                        width: 48,
+                      )
+                    ],
                   ),
-                  color: (isDisableBtn) ? Colors.grey : myDarkGreen,
-                ),
-                child: MaterialButton(
-                    onPressed: (isDisableBtn)
-                        ? null
-                        : () {
-                            putName(userId, nameController.text);
-                            setState(() {
-                              isDisableBtn = true;
-                              isEditing = true;
-                              buttonColor = Colors.grey;
-                              txtColor = Colors.grey;
-                            });
-                          },
-                    height: 50.0,
-                    child: Text(
-                      'Save',
-                      style: TextStyle(
-                        color: (isDisableBtn) ? Colors.white54 : Colors.white,
-                        fontFamily: "harabaraBold",
-                        fontSize: 20.0,
-                      ),
-                    )),
+                ],
               ),
-            ),
-          ],
-        ),
-      ),
+              /*Padding(
+                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                 child: SizedBox(
+                   width:  MediaQuery.of(context).size.width - 48,
+                   height: 48,
+                   child: TextFormField(
+                     style: const TextStyle(
+                         fontFamily: "harabaraBold",
+                         color: Color(0xff333333),
+                         fontSize: 18),
+                     decoration: InputDecoration(
+                       labelText: 'Language',
+                       labelStyle: const TextStyle(
+                           fontFamily: "harabaraBold",
+                           color: Color(0xff2C6976),
+                           fontSize: 18),
+                       prefixIcon: Row(
+                         mainAxisSize: MainAxisSize.min,
+                         children: [
+                           const SizedBox(
+                             width: 24,
+                           ),
+                           SvgPicture.asset("assets/icons/language.svg"),
+                           const SizedBox(
+                             width: 14,
+                           )
+                         ],
+                       ),
+                       suffixIcon: Row(
+                         mainAxisSize: MainAxisSize.min,
+                         children: [
+                           const SizedBox(
+                             width: 24,
+                           ),
+                           MaterialButton(
+                             onPressed: () {},
+                             child: SvgPicture.asset("assets/icons/down.svg"),
+                           ),
+                           const SizedBox(
+                             width: 0,
+                           )
+                         ],
+                       ),
+                       enabledBorder: OutlineInputBorder(
+                           borderSide: const BorderSide(
+                               width: 1.0,
+                               color: Color.fromARGB(255, 44, 105, 118)),
+                           borderRadius: BorderRadius.circular(50.0)),
+                       focusedBorder: OutlineInputBorder(
+                           borderSide: const BorderSide(
+                               width: 1.0,
+                               color: Color.fromARGB(255, 44, 105, 118)),
+                           borderRadius: BorderRadius.circular(50.0)),
+                     ),
+                   ),
+                 ),
+               ),*/
+              const SizedBox(
+                height: 24,
+              ),
+              Center(
+                child: Container(
+                  height: 40,
+                  width: 120,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      30.0,
+                    ),
+                    color: (isDisableBtn) ? Colors.grey : myDarkGreen,
+                  ),
+                  child: MaterialButton(
+                      onPressed: (isDisableBtn)
+                          ? null
+                          : () {
+                              putName(userId, nameController.text);
+                              setState(() {
+                                isDisableBtn = true;
+                                isEditing = true;
+                                buttonColor = Colors.grey;
+                                txtColor = Colors.grey;
+                              });
+                            },
+                      height: 50.0,
+                      child: Text(
+                        'Save',
+                        style: TextStyle(
+                          color: (isDisableBtn) ? Colors.white54 : Colors.white,
+                          fontFamily: "harabaraBold",
+                          fontSize: 20.0,
+                        ),
+                      )),
+                ),
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 
@@ -563,14 +633,31 @@ class _AccountSettingState extends State<AccountSetting> {
     );
   }*/
 
-  Future<void> takePhoto(ImageSource source) async {
-    final pickedImage =
-        await widget.imagePicker.pickImage(source: source, imageQuality: 100);
+  // Future<void> takePhoto(ImageSource source) async {
+  //   final pickedImage =
+  //       await widget.imagePicker.pickImage(source: source, imageQuality: 100);
 
-    widget.pickedFile = File(pickedImage!.path);
-    // accountSettingController.setProfileImagePath(pickedFile!.path);
+  //   widget.pickedFile = File(pickedImage!.path);
+  //   accountSettingController.setProfileImagePath(pickedFile!.path);
 
-    Get.back();
-    print(widget.pickedFile);
-  }
+  // Get.back();
+  // print(widget.pickedFile);
+
+  // // void takePhoto(ImageSource source) async {
+  // //   final pickedImage =
+  // //       // ignore: deprecated_member_use
+  // //       await _picker.getImage(source: source, imageQuality: 100);
+
+  // //   setState(() {
+  // //     _imageFile = pickedFile;
+  // //   });
+  // }
+
+  // void pickImage() async {
+  //   var image = await widget.imagePicker.pickImage(source: ImageSource.gallery);
+
+  //   setState(() {
+  //     _image = image as XFile;
+  //   });
+  // }
 }
