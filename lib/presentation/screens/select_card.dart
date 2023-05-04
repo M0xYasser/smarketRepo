@@ -3,11 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smarket_app/presentation/screens/addcard.dart';
-import '../widgets/customAppBar.dart';
-import '../widgets/select_cardwidget .dart';
+import 'package:smarket_app/presentation/screens/selectaddcard.dart';
+import '../widgets/customAppBar2.dart';
+import '../widgets/selectcardwidget.dart';
 import '../widgets/thankyou.dart';
-import 'emptycard.dart';
 import 'package:http/http.dart' as http;
 
 class SelectCard extends StatefulWidget {
@@ -54,7 +53,7 @@ class _SelectCardState extends State<SelectCard> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: CustomAppBar(
+      body: CustomAppBar2(
         title: 'Select Card',
         child: Column(
           children: [
@@ -104,7 +103,7 @@ class _SelectCardState extends State<SelectCard> {
                 child: MaterialButton(
                     onPressed: () {
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const AddCard(),
+                        builder: (context) => const SelectAddCard(),
                       ));
                     },
                     child: Padding(

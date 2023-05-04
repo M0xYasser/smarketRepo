@@ -27,6 +27,7 @@ class _HomeState extends State<Home> {
   getUseInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final int? id = prefs.getInt('id');
+
     GetHome data = await homeInfo(id!);
     setState(() {
       userName = data.userName!;
@@ -57,7 +58,7 @@ class _HomeState extends State<Home> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomDrawerHeader(
-            //TODO: USER IMG
+              //TODO: USER IMG
               imageUrl: "assets/images/person.png",
               name: userName,
               email: userEmail),

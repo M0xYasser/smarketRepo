@@ -1,12 +1,21 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smarket_app/data/repository/save_money.dart';
 import 'package:smarket_app/presentation/screens/save_money.dart';
 import 'package:smarket_app/presentation/screens/search.dart';
 import 'package:smarket_app/presentation/screens/select_card.dart';
+import '../../data/models/customer.dart';
+import '../../data/models/invoice.dart';
+import '../../data/models/supplier.dart';
+import '../../data/repository/put_checkout.dart';
+import '../../pdf/pdf_api_web.dart';
+import '../../pdf/pdf_invoice_api.dart';
 import '../widgets/market_widget.dart';
 import 'homeScreen.dart';
 import 'market_empty.dart';
@@ -18,7 +27,14 @@ class CartProduct1 extends StatefulWidget {
   CartProduct1State createState() => CartProduct1State();
 }
 
+String money = "0";
+
 class CartProduct1State extends State<CartProduct1> {
+  saveState(bool state) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('state', state);
+  }
+
   Future openPop() => showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -180,12 +196,21 @@ class CartProduct1State extends State<CartProduct1> {
     });
   }
 
+  double sum = 0;
+
   @override
   void initState() {
+    saveState(false);
     getUseId();
-    Timer.periodic(const Duration(seconds: 3), (timer) {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
       getProductsList();
+      getMoney(userId.toString()).then((apiMoney) => money = apiMoney);
+      sum = 0;
+      for (var product in productList) {
+        sum += double.parse(product["productPrice"]);
+      }
       // print("qr1-----$userqr------");
+      // print(productList);
       // print("userId1-----${userId.toString()}------");
     });
     super.initState();
@@ -215,7 +240,7 @@ class CartProduct1State extends State<CartProduct1> {
             InkWell(
               onTap: () {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const Home(),
+                  builder: (context) => const CartProduct1(),
                 ));
               },
               child: Row(children: <Widget>[
@@ -232,7 +257,7 @@ class CartProduct1State extends State<CartProduct1> {
                 InkWell(
                     onTap: () =>
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => const SaveMoney(),
+                          builder: (context) => SaveMoney(),
                         )),
                     child: SvgPicture.asset("assets/icons/saveMoney.svg")),
                 const SizedBox(
@@ -468,10 +493,10 @@ class CartProduct1State extends State<CartProduct1> {
                           borderRadius: BorderRadius.circular(40),
                           color: const Color(0xff68B2A0),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Text(
-                            "200 L.E",
-                            style: TextStyle(
+                            money,
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
                                 fontFamily: "harabara"),
@@ -530,8 +555,8 @@ class CartProduct1State extends State<CartProduct1> {
                       padding: const EdgeInsets.fromLTRB(30, 30, 30, 18),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          Text(
+                        children: [
+                          const Text(
                             "Sub Total",
                             style: TextStyle(
                               fontSize: 20,
@@ -540,8 +565,8 @@ class CartProduct1State extends State<CartProduct1> {
                             ),
                           ),
                           Text(
-                            "39.5 L.E",
-                            style: TextStyle(
+                            sum.toString(),
+                            style: const TextStyle(
                               fontSize: 20,
                               fontFamily: "harabaraBold",
                               color: Colors.white,
@@ -561,9 +586,50 @@ class CartProduct1State extends State<CartProduct1> {
                         ),
                         child: Center(
                           child: InkWell(
-                            onTap: (){Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const SelectCard(),
-                      ));},
+                            onTap: () async {
+                              putCheckout(userId, userqr);
+                              saveState(true);
+                              // final date = DateTime.now();
+                              // final dueDate = date.add(const Duration(days: 7));
+                              // List<InvoiceProduct> productListPdf = [];
+                              // for (var product in productList) {
+                              //   productListPdf.add(InvoiceProduct(
+                              //     name: product["productName"],
+                              //     detail: product["productDetail"],
+                              //     quantity: int.parse(product["productAmount"]),
+                              //     unitPrice:
+                              //         double.parse(product["productPrice"]),
+                              //     size: product["productDetail"],
+                              //   ));
+                              // }
+                              // final invoice = Invoice(
+                              //   supplier: const Supplier(
+                              //     name: 'Smarket App',
+                              //     address: 'AIET',
+                              //   ),
+                              //   customer: const Customer(
+                              //     name: 'Smarket Inc.',
+                              //     email: 'Smarket@gmail.com',
+                              //   ),
+                              //   info: InvoiceInfo(
+                              //     date: date,
+                              //     dueDate: dueDate,
+                              //     number: '${DateTime.now().year}-9999',
+                              //   ),
+                              //   products: productListPdf,
+                              // );
+
+                              // final pdfFile =
+                              //     await PdfInvoiceApi.generate(invoice);
+                              // // print("++++++$pdfFile++++++");
+                              // // final imgg =
+                              // // await PdfConverter.convertToImage(pdfFile.path);
+                              // PdfApi.openFile(pdfFile);
+                              Navigator.of(context)
+                                  .pushReplacement(MaterialPageRoute(
+                                builder: (context) => const SelectCard(),
+                              ));
+                            },
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 0),

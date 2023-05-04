@@ -2,10 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smarket_app/presentation/screens/invoices_screen.dart';
 import 'package:smarket_app/presentation/screens/scan_qr.dart';
 
 import '../../core/constants/constant.dart';
+import '../screens/cart_produt.dart';
 import 'homeBtnClipPath.dart';
 import 'homeBtnDecoration.dart';
 
@@ -18,9 +20,26 @@ class HomeBtn extends StatefulWidget {
   State<HomeBtn> createState() => _BtnState();
 }
 
+bool userState = true;
+
 class _BtnState extends State<HomeBtn> {
+  getState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final bool? state = prefs.getBool('state');
+    setState(() {
+      userState = state!;
+    });
+  }
+
   bool clipPath = true;
   double sizeAnimation = 28.0;
+  @override
+  void initState() {
+    getState();
+    // print("++++++$userState+++++++");
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +53,7 @@ class _BtnState extends State<HomeBtn> {
           Future.delayed(const Duration(milliseconds: 500), () {
             Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => (widget.toScreen == "market")
-                  ? const ScanQRCode()
+                  ? (userState ? const ScanQRCode() : const CartProduct1())
                   : const InvoicesScreen(),
             ));
           });

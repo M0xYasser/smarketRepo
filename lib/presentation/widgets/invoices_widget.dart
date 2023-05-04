@@ -158,6 +158,7 @@ class InvoicesWidget extends StatelessWidget {
                         );
 
                         final pdfFile = await PdfInvoiceApi.generate(invoice);
+                        // print("++++++$pdfFile++++++");
                         // final imgg =
                         // await PdfConverter.convertToImage(pdfFile.path);
 
