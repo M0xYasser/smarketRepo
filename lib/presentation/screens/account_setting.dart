@@ -1,6 +1,5 @@
 // ignore_for_file: must_be_immutable, avoid_types_as_parameter_names, non_constant_identifier_names
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -15,8 +14,6 @@ import '../../data/models/get_home.dart';
 import '../../data/repository/get_home.dart';
 import '../../data/repository/put_account_settings_repo.dart';
 import 'email_otp.dart';
-import 'package:scoped_model/scoped_model.dart';
-import 'package:flutter/foundation.dart';
 
 class AccountSetting extends StatefulWidget {
   File? pickedFile;
@@ -75,25 +72,6 @@ class _AccountSettingState extends State<AccountSetting> {
     super.initState();
   }
 
-  void pickUploadProfilePic() async {
-    final image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxHeight: 512,
-      maxWidth: 512,
-      imageQuality: 90,
-    );
-
-    Reference ref = FirebaseStorage.instance.ref().child("profilepic.jpg");
-
-    await ref.putFile(File(image!.path));
-
-    ref.getDownloadURL().then((value) async {
-      setState(() {
-        //profilePicLink = value;
-      });
-    });
-  }
-
   // final picker = ImagePicker();
 
   // XFile? _image;
@@ -111,7 +89,7 @@ class _AccountSettingState extends State<AccountSetting> {
   // }
 
   final ImagePicker _picker = ImagePicker();
-   File? selectedImage;
+  File? selectedImage;
   getImage(ImageSource source) async {
     final XFile? image = await _picker.pickImage(source: source);
     if (image != null) {
@@ -136,8 +114,6 @@ class _AccountSettingState extends State<AccountSetting> {
                 child: Center(
                   child: Stack(
                     children: [
-                     
-
                       // Obx(() => CircleAvatar(
 
                       //   // ignore: unnecessary_null_comparison
@@ -147,27 +123,27 @@ class _AccountSettingState extends State<AccountSetting> {
                       //   radius: 55,
                       // )),
 
-                      selectedImage == null? Container(
-                        width: 100,
-                        height: 100,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage('assets/images/person.png'),
-                          ),
-                        ),
-                      ): Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: FileImage(selectedImage!)
-                          )
-                        ),
-                      ),
+                      selectedImage == null
+                          ? Container(
+                              width: 100,
+                              height: 100,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage('assets/images/person.png'),
+                                ),
+                              ),
+                            )
+                          : Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: FileImage(selectedImage!))),
+                            ),
                       Positioned(
                           bottom: 5,
                           right: 0,
@@ -187,10 +163,9 @@ class _AccountSettingState extends State<AccountSetting> {
                                 onTap: () {
                                   getImage(ImageSource.gallery);
                                   setState(() {
-                              isDisableBtn = false;
-                            });
-                                }
-                                ),
+                                    isDisableBtn = false;
+                                  });
+                                }),
                           ))
                     ],
                   ),
