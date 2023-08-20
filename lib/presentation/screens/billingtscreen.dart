@@ -1,13 +1,15 @@
+import 'dart:async';
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smarket_app/presentation/screens/addcard.dart';
+import 'package:Smarket/presentation/screens/addcard.dart';
 import '../widgets/billingwidget.dart';
 import '../widgets/customAppBar.dart';
 import 'emptycard.dart';
-import 'package:http/http.dart' as http;
+
+import 'homeScreen.dart';
 
 class BillingScreen extends StatefulWidget {
   const BillingScreen({super.key});
@@ -16,11 +18,9 @@ class BillingScreen extends StatefulWidget {
   State<BillingScreen> createState() => _BillingScreenState();
 }
 
-List cardList = [];
-
 class _BillingScreenState extends State<BillingScreen> {
   int userId = 0;
-
+  bool clicked = false;
   getId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final int? id = prefs.getInt('id');
@@ -30,13 +30,14 @@ class _BillingScreenState extends State<BillingScreen> {
     });
   }
 
-  getCardList() async {
-    await Future.delayed(const Duration(milliseconds: 30));
+  getCardsList() async {
     final response = await http.get(Uri.parse(
-        'https://smartcartapplication.azurewebsites.net/[CardController]/GetAllUserCard?userId=${userId.toString()}'));
+        'https://smartcartapplback.azurewebsites.net/[CardController]/GetAllUserCard?userId=${userId.toString()}'));
     if (mounted) {
       setState(() {
-        cardList = json.decode(response.body);
+        if (response.body.isNotEmpty) {
+          cardList = json.decode(response.body);
+        }
       });
     }
   }
@@ -44,8 +45,9 @@ class _BillingScreenState extends State<BillingScreen> {
   @override
   void initState() {
     getId();
-
-    getCardList();
+    Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      getCardsList();
+    });
     super.initState();
   }
 
@@ -95,29 +97,43 @@ class _BillingScreenState extends State<BillingScreen> {
                   color: const Color(0xff2c6976),
                 ),
                 child: MaterialButton(
+                    key: Key("btn2"),
                     onPressed: () {
+                      setState(() {
+                        clicked = true;
+                      });
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (context) => const AddCard(),
                       ));
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
-                      child: Row(
-                        children: [
-                          SvgPicture.asset('assets/icons/credit_card.svg'),
-                          const SizedBox(
-                            width: 12.0,
-                          ),
-                          const Text(
-                            'Add Card',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "harabaraBold",
-                              fontSize: 20.0,
+                      child: clicked
+                          ? const SizedBox(
+                              height: 30,
+                              width: 30,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            )
+                          : Row(
+                              children: [
+                                SvgPicture.asset(
+                                    'assets/icons/credit_card.svg'),
+                                const SizedBox(
+                                  width: 12.0,
+                                ),
+                                const Text(
+                                  textScaleFactor: 1,
+                                  'Add Card',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "harabaraBold",
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
                     )),
               ),
             ),

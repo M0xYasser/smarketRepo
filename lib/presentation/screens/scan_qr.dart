@@ -1,10 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:developer';
+import 'package:Smarket/presentation/widgets/customAppBar.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smarket_app/data/repository/auth_qr.dart';
+import 'package:Smarket/data/repository/auth_qr.dart';
 import '../../data/models/get_msg.dart';
 import 'cart_produt.dart';
 import 'not_found_qr.dart';
@@ -16,6 +17,9 @@ class ScanQRCode extends StatefulWidget {
   ScanQRCodeState createState() => ScanQRCodeState();
 }
 
+// ignore: non_constant_identifier_names
+int id_user = 0;
+
 class ScanQRCodeState extends State<ScanQRCode> {
   saveQr(String qr) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -23,53 +27,39 @@ class ScanQRCodeState extends State<ScanQRCode> {
     await prefs.setString('qr', qr);
   }
 
-  Barcode? result;
-  QRViewController? controller;
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  int userId = 0;
-  getUseId() async {
+  getId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final int? id = prefs.getInt('id');
     setState(() {
-      userId = id!;
+      id_user = id!;
     });
   }
 
   @override
   void initState() {
+    getId();
+
     super.initState();
-    getUseId();
   }
+
+  Barcode? result;
+  QRViewController? controller;
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Expanded(flex: 10, child: _buildQrView(context)),
-
-          // if (result != null && result!.code == "test")
-          //   InkWell(
-          //     onTap: () {
-          // Navigator.of(context).pushReplacement(MaterialPageRoute(
-          //   builder: (context) => const CartProduct1(),
-          // ));
-          //     },
-          //     child: Text(
-          //         'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}'),
-          //   )
-          // else
-          //   const Text('Scan a code'),
-        ],
-      ),
-    );
+        body: CustomAppBar(
+      title: "Scan QR Code",
+      child: _buildQrView(context),
+    ));
   }
 
   Widget _buildQrView(BuildContext context) {
     //check how width or tall the device is and change the scanArea and overlay accordingly.
     var scanArea = (MediaQuery.of(context).size.width < 400 ||
             MediaQuery.of(context).size.height < 400)
-        ? 150.0
+        ? 200.0
         : 300.0;
 
     return QRView(
@@ -85,21 +75,32 @@ class ScanQRCodeState extends State<ScanQRCode> {
     );
   }
 
+  bool gotValidQR = false;
   void _onQRViewCreated(QRViewController controller) {
     setState(() {
       this.controller = controller;
     });
-    controller.scannedDataStream.listen((scanData) {
-      setState(() async {
-        result = scanData;
-        GetMsg data = await authQr(result!.code.toString(), userId);
+    controller.scannedDataStream.listen((scanData) async {
+      //TODO
+      result = scanData;
+      GetMsg data = await authQr(result?.code.toString(), id_user);
+      setState(() {
+        // print("++++++++++++");
+        // print(result?.code.toString());
+
         if (data.message == "Account connected Successfully!") {
+          gotValidQR = true;
+          productList.clear();
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => const CartProduct1(),
           ));
           saveQr(result!.code.toString());
-          // print(result!.code.toString());
         } else {
+          if (gotValidQR) {
+            return;
+          }
+          // print("test++++not+++");
+
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => const NotFoundCode(),
           ));

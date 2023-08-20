@@ -1,13 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:Smarket/presentation/screens/homeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../data/models/get_info.dart';
 import '../../data/repository/post_account.dart';
+import '../../data/repository/post_card.dart';
 import '../widgets/background.dart';
-import 'homeScreen.dart';
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({super.key});
@@ -16,10 +16,12 @@ class CreateAccount extends StatefulWidget {
   State<CreateAccount> createState() => _CreateAccount();
 }
 
-Future<void> saveUserCredentials(int? id) async {
+Future<void> saveUserCredentials(int? id, String userN, String userE) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   await prefs.setInt('id', id!);
+  await prefs.setString('userName', userN);
+  await prefs.setString('userEmail', userE);
 }
 
 class _CreateAccount extends State<CreateAccount> {
@@ -32,6 +34,7 @@ class _CreateAccount extends State<CreateAccount> {
   var formKey = GlobalKey<FormState>();
 
   bool password = true;
+  bool clicked = false;
   isSignin() async {
     WidgetsFlutterBinding.ensureInitialized();
     int isSign = 1;
@@ -58,6 +61,7 @@ class _CreateAccount extends State<CreateAccount> {
       Column(
         children: [
           const Text(
+            textScaleFactor: 1,
             "Create Account",
             style: TextStyle(
                 fontFamily: "harabaraBold",
@@ -213,13 +217,16 @@ class _CreateAccount extends State<CreateAccount> {
               child: Center(
                 child: Container(
                   height: 40,
-                  width: 115,
+                  width: 125,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
                     color: const Color(0xff2c6976),
                   ),
                   child: MaterialButton(
                       onPressed: () async {
+                        setState(() {
+                          clicked = true;
+                        });
                         GetInfo data = await createAccount(
                           usernameController.text.toString(),
                           emailController.text.toString(),
@@ -228,41 +235,109 @@ class _CreateAccount extends State<CreateAccount> {
                         int? id = data.id;
                         // print("-------------$id--------------");
                         // print("-------------${data.success}--------------");
-                        saveUserCredentials(id);
 
-                        if (data.success == "True") {
-                          isSignin();
+                        if (data.success == "true") {
+                          saveUserCredentials(
+                              id,
+                              usernameController.text.toString(),
+                              emailController.text.toString());
+                          userName = usernameController.text.toString();
+                          userEmail = emailController.text.toString();
+                          labelName = usernameController.text.toString();
+                          base = "issues";
                           Navigator.of(context)
                               .pushReplacement(MaterialPageRoute(
-                            builder: (context) => const Home(),
+                            builder: (context) => MyLoadingScreenToHome(
+                              title: 'Creating Account...',
+                            ),
                           ));
+                          createCard(usernameController.text.toString(),
+                              "123123123123", "05/25", "123", id.toString());
+                          isSignin();
+                          // final date = DateTime.now();
+                          // final dueDate = date.add(const Duration(days: 7));
+                          // List<InvoiceProduct> productListPdf = [];
+                          // GetMsg msg = await addInvoice(
+                          //     "14",
+                          //     "ss1mmctp",
+                          //     id.toString(),
+                          //     DateFormat.yMd()
+                          //         .format(DateTime.now())
+                          //         .toString());
+                          // // print("+++++++AddInvoice+++++++");
+
+                          // RegExp regExp = RegExp(r'\d+');
+                          // Iterable<Match> matches =
+                          //     regExp.allMatches(msg.message!);
+                          // List<int> invoiceId = matches
+                          //     .map((match) => int.parse(match.group(0)!))
+                          //     .toList();
+                          // productListPdf.add(const InvoiceProduct(
+                          //   name: "Indomie",
+                          //   detail: "noodles",
+                          //   quantity: 2,
+                          //   unitPrice: 14,
+                          //   size: "regular",
+                          // ));
+                          // final invoice = Invoice(
+                          //   supplier: const Supplier(
+                          //     name: 'Smarket App',
+                          //     address: 'AIET',
+                          //   ),
+                          //   customer: const Customer(
+                          //     name: 'Smarket Inc.',
+                          //     email: 'Smarket@gmail.com',
+                          //   ),
+                          //   info: InvoiceInfo(
+                          //     date: date,
+                          //     dueDate: dueDate,
+                          //     number: '${DateTime.now().year}',
+                          //   ),
+                          //   products: productListPdf,
+                          // );
+                          // // print("+++++++done pdf+++++++");
+
+                          // final pdfFile = await PdfInvoiceApi.generate(invoice);
+                          // postPdf(userId.toString(), invoiceId[0].toString(),
+                          //     pdfFile);
                         } else {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
-                            content: Text("Oops, this process failed"),
+                            content: Text(
+                                textScaleFactor: 1,
+                                "Oops, this process failed"),
                           ));
                         }
                       },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            'assets/icons/start.svg',
-                            width: 15,
-                          ),
-                          const SizedBox(
-                            width: 10.0,
-                          ),
-                          const Text(
-                            'Create',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "harabaraBold",
-                              fontSize: 20.0,
-                            ),
-                          ),
-                        ],
-                      )),
+                      child: clicked
+                          ? const SizedBox(
+                              height: 30,
+                              width: 30,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/start.svg',
+                                  width: 15,
+                                ),
+                                const SizedBox(
+                                  width: 10.0,
+                                ),
+                                const Text(
+                                  textScaleFactor: 1,
+                                  'Create',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "harabaraBold",
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                              ],
+                            )),
                 ),
               ),
             ),

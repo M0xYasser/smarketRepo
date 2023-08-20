@@ -1,12 +1,14 @@
 // ignore_for_file: file_names
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import '../../core/constants/constant.dart';
 
 class CustomDrawerHeader extends StatelessWidget {
-  final String imageUrl, name, email;
+  final String base64, name, email;
   const CustomDrawerHeader(
       {super.key,
-      required this.imageUrl,
+      required this.base64,
       required this.name,
       required this.email});
 
@@ -19,15 +21,28 @@ class CustomDrawerHeader extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 32,
-              backgroundImage: AssetImage(imageUrl),
-            ),
+            base64.contains("issues")
+                ? const CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 50,
+                    backgroundImage: AssetImage('assets/images/person.png'),
+                  )
+                : base64 == ""
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                        color: myDarkGreen,
+                      ))
+                    : CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 50,
+                        backgroundImage:
+                            Image.memory(base64Decode(base64)).image,
+                      ),
             const SizedBox(
               height: 18,
             ),
             Text(
+              textScaleFactor: 1,
               name,
               style: const TextStyle(fontFamily: "harabaraBold", fontSize: 20),
             ),
@@ -35,6 +50,7 @@ class CustomDrawerHeader extends StatelessWidget {
               height: 4,
             ),
             Text(
+              textScaleFactor: 1,
               email,
               style: const TextStyle(fontFamily: "harabara", fontSize: 14),
             ),

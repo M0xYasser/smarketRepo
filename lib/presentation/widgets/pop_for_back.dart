@@ -16,6 +16,7 @@ class BackPopScreenState extends State<BackPopScreen> {
               borderRadius: BorderRadius.circular(20.0),
             ),
             title: const Text(
+              textScaleFactor: 1,
               "Warning!",
               style: TextStyle(
                 fontFamily: "harabaraBold",
@@ -29,6 +30,7 @@ class BackPopScreenState extends State<BackPopScreen> {
               child: Column(
                 children: const <Widget>[
                   Text(
+                    textScaleFactor: 1,
                     "Are you sure you want to leave?",
                     style: TextStyle(
                       fontFamily: "harabara",
@@ -40,6 +42,7 @@ class BackPopScreenState extends State<BackPopScreen> {
                     height: 10,
                   ),
                   Text(
+                    textScaleFactor: 1,
                     "If you choose leave you will lose all active",
                     style: TextStyle(
                       fontFamily: "harabara",
@@ -77,6 +80,7 @@ class BackPopScreenState extends State<BackPopScreen> {
                                       width: 13,
                                     ),
                                     Text(
+                                      textScaleFactor: 1,
                                       "Leave",
                                       style: TextStyle(
                                         fontFamily: "harabaraBold",
@@ -109,6 +113,7 @@ class BackPopScreenState extends State<BackPopScreen> {
                                       width: 13,
                                     ),
                                     Text(
+                                      textScaleFactor: 1,
                                       "Cancle",
                                       style: TextStyle(
                                           fontFamily: "harabaraBold",
@@ -148,6 +153,7 @@ class BackPopScreenState extends State<BackPopScreen> {
             ),
             const Center(
               child: Text(
+                textScaleFactor: 1,
                 "Home Screeen",
                 style: TextStyle(
                     fontSize: 40,
@@ -171,6 +177,7 @@ class BackPopScreenState extends State<BackPopScreen> {
                     openPop();
                   },
                   child: const Text(
+                    textScaleFactor: 1,
                     "Market",
                     style: TextStyle(
                       fontFamily: "harabaraBold",

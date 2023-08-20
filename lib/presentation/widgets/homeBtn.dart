@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smarket_app/presentation/screens/invoices_screen.dart';
-import 'package:smarket_app/presentation/screens/scan_qr.dart';
+import 'package:Smarket/presentation/screens/invoices_screen.dart';
+import 'package:Smarket/presentation/screens/scan_qr.dart';
 
 import '../../core/constants/constant.dart';
 import '../screens/cart_produt.dart';
@@ -28,7 +28,7 @@ class _BtnState extends State<HomeBtn> {
 
     final bool? state = prefs.getBool('state');
     setState(() {
-      userState = state!;
+      userState = state ?? true;
     });
   }
 
@@ -45,6 +45,7 @@ class _BtnState extends State<HomeBtn> {
   Widget build(BuildContext context) {
     // START [BTN]
     return GestureDetector(
+        key: widget.key,
         onTap: () {
           setState(() {
             clipPath = false;
@@ -137,6 +138,7 @@ class _BtnState extends State<HomeBtn> {
                       ),
                       if (clipPath)
                         Text(
+                          textScaleFactor: 1,
                           widget.title,
                           style: const TextStyle(
                               fontFamily: "harabaraBlack",

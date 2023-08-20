@@ -1,13 +1,29 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import '../../data/models/customer.dart';
-import '../../data/models/supplier.dart';
-import '../../data/models/invoice.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../core/constants/constant.dart';
+import '../../data/models/get_msg.dart';
+import '../../data/repository/get_home.dart';
 import '../../pdf/pdf_api_web.dart';
-import '../../pdf/pdf_invoice_api.dart';
 
-class InvoicesWidget extends StatelessWidget {
+Future<File> _writeToFile(String base64String) async {
+  final bytes = base64.decode(base64String);
+
+  final dir = await getApplicationDocumentsDirectory();
+  final file = File('${dir.path}/invoice.pdf');
+
+  await file.writeAsBytes(bytes);
+
+  return file;
+}
+
+class InvoicesWidget extends StatefulWidget {
   final String date, state, card, price, paymentMethod;
+
+  final int invoiceID;
 
   const InvoicesWidget(
       {super.key,
@@ -15,7 +31,32 @@ class InvoicesWidget extends StatelessWidget {
       required this.date,
       required this.card,
       required this.price,
-      required this.paymentMethod});
+      required this.paymentMethod,
+      required this.invoiceID});
+
+  @override
+  State<InvoicesWidget> createState() => _InvoicesWidgetState();
+}
+
+int userId = 0;
+
+class _InvoicesWidgetState extends State<InvoicesWidget> {
+  bool clicked = false;
+  getUseInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int? id = prefs.getInt('id');
+    setState(() {
+      userId = id!;
+      // print("++++++++$id+++++++");
+    });
+  }
+
+  @override
+  void initState() {
+    getUseInfo();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -37,7 +78,7 @@ class InvoicesWidget extends StatelessWidget {
                   InkWell(
                     onTap: () {},
                     child: SvgPicture.asset(
-                      (state == "market")
+                      (widget.state == "market")
                           ? "assets/icons/market.svg"
                           : "assets/icons/online.svg",
                     ),
@@ -45,16 +86,17 @@ class InvoicesWidget extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 12.25,
+                      const SizedBox(
+                        width: 24,
                       ),
                       SizedBox(
-                        width: 74,
+                        width: 100,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              date,
+                              textScaleFactor: 1,
+                              widget.date,
                               style: const TextStyle(
                                   fontSize: 12,
                                   fontFamily: "harabaraBold",
@@ -64,7 +106,7 @@ class InvoicesWidget extends StatelessWidget {
                               height: 8,
                             ),
                             SvgPicture.asset(
-                              (state == "market")
+                              (widget.state == "market")
                                   ? "assets/icons/markettxt.svg"
                                   : "assets/icons/onlinetxt.svg",
                             )
@@ -76,6 +118,9 @@ class InvoicesWidget extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(
+              width: 8,
+            ),
             Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -86,85 +131,79 @@ class InvoicesWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "$price L.E",
+                          textScaleFactor: 1,
+                          "${widget.price} L.E",
                           style: const TextStyle(
                               fontSize: 12,
                               fontFamily: "harabaraBold",
                               color: Colors.black),
                         ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: const Color.fromARGB(100, 204, 204, 204),
-                              borderRadius: BorderRadius.circular(4)),
-                          height: 14,
-                          width: 50,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "$paymentMethod ",
-                                style: const TextStyle(
-                                    fontSize: 7,
-                                    fontFamily: "harabaraBold",
-                                    color: Color(0xff999999)),
-                              ),
-                              Text(
-                                card,
-                                style: const TextStyle(
-                                    fontSize: 7,
-                                    fontFamily: "harabaraBold",
-                                    color: Color(0xff444444)),
-                              ),
-                            ],
-                          ),
-                        ),
+                        // const SizedBox(
+                        //   height: 8,
+                        // ),
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //       color: const Color.fromARGB(100, 204, 204, 204),
+                        //       borderRadius: BorderRadius.circular(4)),
+                        //   height: 14,
+                        //   width: 50,
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.center,
+                        //     children: [
+                        //      Text(
+                        // textScaleFactor: 1,
+                        //         "${widget.paymentMethod} ",
+                        //         style: const TextStyle(
+                        //             fontSize: 7,
+                        //             fontFamily: "harabaraBold",
+                        //             color: Color(0xff999999)),
+                        //       ),
+                        //      Text(
+                        // textScaleFactor: 1,
+                        //         widget.card,
+                        //         style: const TextStyle(
+                        //             fontSize: 7,
+                        //             fontFamily: "harabaraBold",
+                        //             color: Color(0xff444444)),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 12.25,
+                  const SizedBox(
+                    width: 24,
                   ),
                   InkWell(
                       onTap: () async {
-                        final date = DateTime.now();
-                        final dueDate = date.add(const Duration(days: 7));
-
-                        final invoice = Invoice(
-                          supplier: const Supplier(
-                            name: 'Smarket App',
-                            address: 'AIET',
-                          ),
-                          customer: const Customer(
-                            name: 'Smarket Inc.',
-                            email: 'Smarket@gmail.com',
-                          ),
-                          info: InvoiceInfo(
-                            date: date,
-                            dueDate: dueDate,
-                            number: '${DateTime.now().year}-9999',
-                          ),
-                          products: [
-                            const InvoiceProduct(
-                              name: 'Milk',
-                              detail: 'Elmarei',
-                              quantity: 3,
-                              unitPrice: 18,
-                              size: '330 ml',
-                            )
-                          ],
-                        );
-
-                        final pdfFile = await PdfInvoiceApi.generate(invoice);
-                        // print("++++++$pdfFile++++++");
-                        // final imgg =
-                        // await PdfConverter.convertToImage(pdfFile.path);
-
+                        setState(() {
+                          clicked = true;
+                        });
+                        // print("+++++++${widget.invoiceID}++++++");
+                        // print("+++++++$userId++++++");
+                        GetMsg data =
+                            await userInvoice(userId, widget.invoiceID);
+                        // print(data.message);
+                        File pdfFile = await _writeToFile(data.message!);
                         PdfApi.openFile(pdfFile);
+                        setState(() {
+                          clicked = false;
+                        });
                       },
-                      child: SvgPicture.asset("assets/icons/pdf.svg")),
+                      child: clicked
+                          ? const SizedBox(
+                              height: 30,
+                              width: 30,
+                              child: CircularProgressIndicator(
+                                color: myDarkGreen,
+                              ),
+                            )
+                          : SvgPicture.asset(
+                              "assets/icons/pdf.svg",
+                              height: 28,
+                              width: 28,
+                            )),
                   const SizedBox(
                     width: 20,
                   )

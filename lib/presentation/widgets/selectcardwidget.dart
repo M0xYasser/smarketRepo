@@ -44,6 +44,7 @@ class SelectCardWidget extends StatelessWidget {
                   width: 60,
                   child: Center(
                     child: Text(
+                      textScaleFactor: 1,
                       "xxxx$cardnumber",
                       style: const TextStyle(
                         color: Color(0xff444444),

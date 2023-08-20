@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:smarket_app/presentation/screens/sign_in.dart';
+import 'package:Smarket/presentation/screens/sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -121,6 +121,7 @@ class OnoardingScreenState extends State<OnboardingScreen> {
                               ),
                             ),
                             const Text(
+                              textScaleFactor: 1,
                               "Scan the QR code",
                               style: TextStyle(
                                 fontSize: 24,
@@ -129,6 +130,7 @@ class OnoardingScreenState extends State<OnboardingScreen> {
                             ),
                             const SizedBox(height: 25),
                             const Text(
+                              textScaleFactor: 1,
                               ' and enjoy with new\nshopping experience!',
                               style: TextStyle(
                                 fontSize: 24,
@@ -143,6 +145,7 @@ class OnoardingScreenState extends State<OnboardingScreen> {
                               height: 100,
                             ),
                             const Text(
+                              textScaleFactor: 1,
                               "Pay Online",
                               style: TextStyle(
                                 fontSize: 24,
@@ -151,6 +154,7 @@ class OnoardingScreenState extends State<OnboardingScreen> {
                             ),
                             const SizedBox(height: 40),
                             const Text(
+                              textScaleFactor: 1,
                               ' Shop quickly without\nwaitting for a turn at the\n        cashier!',
                               style: TextStyle(
                                 fontSize: 24,
@@ -180,6 +184,7 @@ class OnoardingScreenState extends State<OnboardingScreen> {
                               height: 40,
                             ),
                             const Text(
+                              textScaleFactor: 1,
                               "New Features",
                               style: TextStyle(
                                 fontSize: 24,
@@ -188,6 +193,7 @@ class OnoardingScreenState extends State<OnboardingScreen> {
                             ),
                             const SizedBox(height: 20),
                             const Text(
+                              textScaleFactor: 1,
                               'Enjoy with new features\n that are useful for you',
                               style: TextStyle(
                                 fontSize: 24,
@@ -252,6 +258,7 @@ class OnoardingScreenState extends State<OnboardingScreen> {
                                     ),
                                     child: Center(
                                       child: InkWell(
+                                        key: Key("start"),
                                         onTap: () {
                                           //saveprefs();
                                           Navigator.of(context).pushReplacement(
@@ -261,6 +268,7 @@ class OnoardingScreenState extends State<OnboardingScreen> {
                                           );
                                         },
                                         child: const Text(
+                                          textScaleFactor: 1,
                                           "Start",
                                           style: TextStyle(
                                             fontFamily: "harabaraBold",

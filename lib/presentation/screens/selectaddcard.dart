@@ -4,16 +4,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smarket_app/presentation/screens/select_card.dart';
+import 'package:Smarket/presentation/screens/select_card.dart';
 //import 'package:universal_html/html.dart';
 import '../../data/repository/post_card.dart';
-import '../widgets/customAppBar.dart';
+import '../widgets/customAppBar2.dart';
 
 class SelectAddCard extends StatefulWidget {
   const SelectAddCard({Key? key}) : super(key: key);
 
   @override
   State<SelectAddCard> createState() => _SelectAddCardState();
+}
+
+class ExpiryDateFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final text = newValue.text;
+
+    // Check if the user is deleting characters
+    if (oldValue.text.length >= text.length) {
+      return newValue;
+    }
+
+    // Add the forward slash after two characters have been entered
+    if (text.length == 2) {
+      final newText = '$text/';
+      return newValue.copyWith(
+        text: newText,
+        selection: TextSelection.collapsed(offset: newText.length),
+      );
+    }
+
+    return newValue;
+  }
 }
 
 class _SelectAddCardState extends State<SelectAddCard> {
@@ -43,7 +67,7 @@ class _SelectAddCardState extends State<SelectAddCard> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: CustomAppBar(
+      body: CustomAppBar2(
         title: "Add New Card",
         child: ListView(
           children: [
@@ -162,6 +186,7 @@ class _SelectAddCardState extends State<SelectAddCard> {
                   controller: _expirtationDateController,
                   keyboardType: TextInputType.number,
                   inputFormatters: [
+                    ExpiryDateFormatter(),
                     LengthLimitingTextInputFormatter(5),
                   ],
                   //obscureText: NumberInputElement.supported,
@@ -284,6 +309,7 @@ class _SelectAddCardState extends State<SelectAddCard> {
                             width: 12.0,
                           ),
                           const Text(
+                            textScaleFactor: 1,
                             'Add Card',
                             style: TextStyle(
                               color: Colors.white,

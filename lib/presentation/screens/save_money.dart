@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smarket_app/data/repository/save_money.dart';
+import 'package:Smarket/data/repository/save_money.dart';
 import '../../core/constants/constant.dart';
 import '../widgets/customAppBar2.dart';
 import '../widgets/label.dart';
@@ -51,6 +51,7 @@ class _SaveMoneyState extends State<SaveMoney> {
             height: 24,
           ),
           const Text(
+            textScaleFactor: 1,
             "Conserve your money by \nsetting a purchase value so \nthat you do not exceed it",
             style: TextStyle(fontFamily: "harabaraBold", fontSize: 20),
             textAlign: TextAlign.center,
@@ -87,6 +88,7 @@ class _SaveMoneyState extends State<SaveMoney> {
                         borderRadius: BorderRadius.circular(20)),
                     child: const Center(
                         child: Text(
+                      textScaleFactor: 1,
                       "Deactive",
                       style: TextStyle(
                           fontFamily: "harabaraBold",
@@ -119,6 +121,7 @@ class _SaveMoneyState extends State<SaveMoney> {
                           width: 8,
                         ),
                         const Text(
+                          textScaleFactor: 1,
                           "Set Value",
                           style: TextStyle(
                               fontFamily: "harabaraBold",

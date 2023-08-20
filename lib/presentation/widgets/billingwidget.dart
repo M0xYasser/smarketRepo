@@ -47,6 +47,7 @@ class BillingWidget extends StatelessWidget {
                 SizedBox(
                   width: 60,
                   child: Text(
+                    textScaleFactor: 1,
                     "xxxx$cardnumber",
                     style: const TextStyle(
                       color: Color(0xff444444),
@@ -84,6 +85,7 @@ class BillingWidget extends StatelessWidget {
                                         width: 8,
                                       ),
                                       const Text(
+                                        textScaleFactor: 1,
                                         "Delete",
                                         style: TextStyle(
                                             fontFamily: "harabaraBold",
@@ -93,6 +95,7 @@ class BillingWidget extends StatelessWidget {
                                     ],
                                   ),
                                   const Text(
+                                    textScaleFactor: 1,
                                     "Are you sure want to delete ?",
                                     style: TextStyle(
                                         fontFamily: "harabara",
@@ -119,6 +122,7 @@ class BillingWidget extends StatelessWidget {
                                               color: Colors.white),
                                           child: const Center(
                                             child: Text(
+                                              textScaleFactor: 1,
                                               "Cancel",
                                               style: TextStyle(
                                                   fontFamily: "harabaraBold",
@@ -148,6 +152,7 @@ class BillingWidget extends StatelessWidget {
                                               color: myDarkGreen),
                                           child: const Center(
                                             child: Text(
+                                              textScaleFactor: 1,
                                               "Delete",
                                               style: TextStyle(
                                                   fontFamily: "harabaraBold",

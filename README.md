@@ -1,4 +1,4 @@
-# smarket_app
+# Smarket
 
 A new Flutter project.
 

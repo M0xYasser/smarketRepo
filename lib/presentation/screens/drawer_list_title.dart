@@ -18,6 +18,7 @@ class EmptyCard extends StatelessWidget {
             height: 50.0,
           ),
           const Text(
+            textScaleFactor: 1,
             "There are no cards. \nplease add a card",
             style: TextStyle(
                 fontFamily: "harabaraBold",

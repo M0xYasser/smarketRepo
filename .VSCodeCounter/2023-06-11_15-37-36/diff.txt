@@ -1,0 +1,58 @@
+Date : 2023-06-11 15:37:36
+Directory : c:\Users\Mobo\Desktop\smarket_repo\lib
+Total : 27 files,  456 codes, -55 comments, 23 blanks, all 424 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Dart     |         27 |        456 |        -55 |         23 |        424 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                             | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                |         27 |        456 |        -55 |         23 |        424 |
+| . (Files)                                                                        |          1 |          0 |         30 |          0 |         30 |
+| data                                                                             |          1 |         -2 |          0 |          0 |         -2 |
+| data\models                                                                      |          1 |         -2 |          0 |          0 |         -2 |
+| pdf                                                                              |          1 |         -8 |          0 |          0 |         -8 |
+| presentation                                                                     |         24 |        466 |        -85 |         23 |        404 |
+| presentation\screens                                                             |         18 |        398 |        -87 |         18 |        329 |
+| presentation\widgets                                                             |          6 |         68 |          2 |          5 |         75 |
++----------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                         | language | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| c:\Users\Mobo\Desktop\smarket_repo\lib\data\models\invoice.dart                  | Dart     |         -2 |          0 |          0 |         -2 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\main.dart                                 | Dart     |          0 |         30 |          0 |         30 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\pdf\pdf_invoice_api.dart                  | Dart     |         -8 |          0 |          0 |         -8 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\account_setting.dart | Dart     |          5 |         -1 |          1 |          5 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\addcard.dart         | Dart     |          0 |         -3 |         -3 |         -6 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\billingtscreen.dart  | Dart     |         30 |          0 |         -1 |         29 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\cart_produt.dart     | Dart     |        220 |       -155 |         12 |         77 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\create_account.dart  | Dart     |        -32 |         42 |         -1 |          9 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\email_otp.dart       | Dart     |        -13 |         34 |          0 |         21 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\empty_invoices.dart  | Dart     |          9 |         -1 |          1 |          9 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\emptycard.dart       | Dart     |         47 |          0 |          2 |         49 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\emptyselectcard.dart | Dart     |         80 |          0 |          4 |         84 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\homeScreen.dart      | Dart     |         10 |          1 |          1 |         12 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\invoices_screen.dart | Dart     |         -4 |          0 |         -1 |         -5 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\paymentdetails.dart  | Dart     |        -16 |          0 |          0 |        -16 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\progress_home.dart   | Dart     |         17 |          1 |          0 |         18 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\reset_password.dart  | Dart     |         12 |          0 |          1 |         13 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\scan_qr.dart         | Dart     |          5 |         -9 |          3 |         -1 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\select_card.dart     | Dart     |          1 |          0 |         -2 |         -1 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\sign_in.dart         | Dart     |         25 |          4 |          1 |         30 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\screens\splash_screen.dart   | Dart     |          2 |          0 |          0 |          2 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\widgets\billingwidget.dart   | Dart     |          0 |          0 |          1 |          1 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\widgets\invoices_widget.dart | Dart     |         23 |          0 |          0 |         23 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\widgets\logout_pop.dart      | Dart     |          3 |          1 |          2 |          6 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\widgets\market_widget.dart   | Dart     |         35 |          1 |          0 |         36 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\widgets\thankyou.dart        | Dart     |          7 |          0 |          0 |          7 |
+| c:\Users\Mobo\Desktop\smarket_repo\lib\presentation\widgets\warninng.dart        | Dart     |          0 |          0 |          2 |          2 |
+| Total                                                                            |          |        456 |        -55 |         23 |        424 |
++----------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

@@ -46,17 +46,18 @@ class PaymentWidget extends StatelessWidget {
                           ? "assets/icons/visa.svg"
                           : "assets/icons/mastercard.svg",
                     )),
-                SizedBox(
-                  width: 60,
-                  child: Text(
-                    "xxxx$cardnumber",
-                    style: const TextStyle(
-                      color: Color(0xff444444),
-                      fontFamily: "harabaraBold",
-                      fontSize: 12.0,
-                    ),
-                  ),
-                ),
+                // SizedBox(
+                //   width: 60,
+                //   child:Text(
+                            // textScaleFactor: 1,
+                //     "xxxx$cardnumber",
+                //     style: const TextStyle(
+                //       color: Color(0xff444444),
+                //       fontFamily: "harabaraBold",
+                //       fontSize: 12.0,
+                //     ),
+                //   ),
+                // ),
                 InkWell(
                   onTap: () {
                     showDialog(
@@ -86,6 +87,7 @@ class PaymentWidget extends StatelessWidget {
                                         width: 8,
                                       ),
                                       const Text(
+                            textScaleFactor: 1,
                                         "Delete",
                                         style: TextStyle(
                                             fontFamily: "harabaraBold",
@@ -95,6 +97,7 @@ class PaymentWidget extends StatelessWidget {
                                     ],
                                   ),
                                   const Text(
+                            textScaleFactor: 1,
                                     "Are you sure want to delete ?",
                                     style: TextStyle(
                                         fontFamily: "harabara",
@@ -118,7 +121,8 @@ class PaymentWidget extends StatelessWidget {
                                                       const Color(0xff888888)),
                                               color: Colors.white),
                                           child: const Center(
-                                            child: Text(
+                                            child:Text(
+                            textScaleFactor: 1,
                                               "Cancel",
                                               style: TextStyle(
                                                   fontFamily: "harabaraBold",
@@ -138,7 +142,8 @@ class PaymentWidget extends StatelessWidget {
                                                   BorderRadius.circular(12),
                                               color: myDarkGreen),
                                           child: const Center(
-                                            child: Text(
+                                            child:Text(
+                            textScaleFactor: 1,
                                               "Delete",
                                               style: TextStyle(
                                                   fontFamily: "harabaraBold",

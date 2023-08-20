@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:smarket_app/presentation/screens/scan_qr.dart';
+import 'package:Smarket/presentation/screens/scan_qr.dart';
 
 import '../widgets/background.dart';
 
@@ -52,6 +52,7 @@ class NotFoundCodeState extends State<NotFoundCode> {
                               width: 8,
                             ),
                             const Text(
+                              textScaleFactor: 1,
                               "Scan Again",
                               style: TextStyle(
                                 fontFamily: "harabaraBold",

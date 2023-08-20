@@ -13,7 +13,7 @@ const List<Color> myGradient = [
 ];
 
 String accountSettigsUrl =
-    "https://smartcartapp.azurewebsites.net/[AccountSettingsController]/AccountSettings?userId=";
+    "https://smartcartapplback.azurewebsites.net/[AccountSettingsController]/AccountSettings?userId=";
 
 String supportMail = "3c4b43179b@boxmail.lol";
 // TODO : Support Email

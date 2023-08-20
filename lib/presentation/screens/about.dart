@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smarket_app/presentation/widgets/customAppBar.dart';
+import 'package:Smarket/presentation/widgets/customAppBar.dart';
 
 class About extends StatelessWidget {
   const About({Key? key}) : super(key: key);
@@ -14,6 +14,7 @@ class About extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
+              textScaleFactor: 1,
               "Smarket App",
               style: TextStyle(
                   fontFamily: "harabaraBold",
@@ -22,6 +23,7 @@ class About extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const Text(
+              textScaleFactor: 1,
               "Version 00.00.00",
               style: TextStyle(
                   fontFamily: "harabaraBold",
@@ -41,6 +43,7 @@ class About extends StatelessWidget {
               height: 15.0,
             ),
             const Text(
+              textScaleFactor: 1,
               "All Rights Reserved © 2023",
               style: TextStyle(
                   fontFamily: "harabaraBold",

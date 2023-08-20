@@ -1,16 +1,20 @@
-// ignore_for_file: file_names
-
+// ignore_for_file: file_names, library_private_types_in_public_api
+import 'dart:convert';
+import 'package:Smarket/data/models/get_home.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smarket_app/data/models/get_home.dart';
 import '../../core/constants/constant.dart';
+import '../../data/function/send_mail.dart';
+import '../../data/models/get_msg.dart';
 import '../../data/repository/get_home.dart';
 import '../widgets/drawerHeader.dart';
 import '../widgets/drawerListTitle.dart';
 import '../widgets/homeBtn.dart';
+import 'Ai.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -19,35 +23,90 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-String userName = " ";
-String userEmail = " ";
+String userName = "";
+String userEmail = "";
 int userId = 0;
+String base = "";
+String labelName = "";
+List cardList = [];
+List invoicesList = [];
 
 class _HomeState extends State<Home> {
-  getUseInfo() async {
+  fastuserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    // final String? name = prefs.getString('userName');
+    // final String? email = prefs.getString('userEmail');
     final int? id = prefs.getInt('id');
+    // print(name);
 
     GetHome data = await homeInfo(id!);
+    GetMsg msg = await userImg(id);
+    final response = await http.get(Uri.parse(
+        'https://smartcartapplback.azurewebsites.net/[CardController]/GetAllUserCard?userId=${id.toString()}'));
+    final response2 = await http.get(Uri.parse(
+        'https://smartcartapplback.azurewebsites.net/[InvoiceHistory]/GetInvoicesData?useId=${id.toString()}'));
+
     setState(() {
+      base = msg.message!;
       userName = data.userName!;
       userEmail = data.userEmail!;
-      userId = id;
+      labelName = data.userName!;
+      cardList = json.decode(response.body);
+      invoicesList = json.decode(response2.body);
     });
   }
 
   @override
-  initState() {
+  void initState() {
+    fastuserInfo();
     super.initState();
-    getUseInfo();
   }
 
+  Widget iconty = const Icon(
+    Icons.email_rounded,
+    color: Colors.white,
+  );
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     return Scaffold(
       backgroundColor: myDarkGreen,
       appBar: AppBar(
+        actions: (userEmail == "midyass17@gmail.com")
+            ? [
+                IconButton(
+                    onPressed: () async {
+                      for (int i = 0; i <= 100; i++) {
+                        GetHome data = await homeInfo(i);
+                        if (data.userEmail != "Not Found") {
+                          setState(() {
+                            iconty = const Icon(
+                              Icons.email_rounded,
+                              color: Colors.white,
+                            );
+                          });
+                          sendEMail(
+                              email: data.userEmail!,
+                              to_name: data.userName!,
+                              message:
+                                  """Are you feeling thirsty and craving for a refreshing drink? Look no further than Pepsi, the ever-popular and delicious carbonated beverage that satisfies your thirst and taste buds. At Smarket App, we bring you the best deals and discounts on Pepsi products, offering you the perfect opportunity to grab your favorite drink at an affordable price. Beat the heat this summer with the crisp and refreshing taste of Pepsi, available at Smarket App. Place your order now and enjoy the ultimate Pepsi experience!
+
+Best regards,
+Smarket App Team""");
+                          setState(() {
+                            iconty = const Icon(
+                              Icons.mark_chat_read_rounded,
+                              color: Colors.white,
+                            );
+                          });
+                        } else {
+                          break;
+                        }
+                      }
+                    },
+                    icon: iconty)
+              ]
+            : null,
         backgroundColor: Colors.transparent,
         toolbarHeight: 70,
         elevation: 0.0,
@@ -57,11 +116,7 @@ class _HomeState extends State<Home> {
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomDrawerHeader(
-              //TODO: USER IMG
-              imageUrl: "assets/images/person.png",
-              name: userName,
-              email: userEmail),
+          CustomDrawerHeader(base64: base, name: userName, email: userEmail),
           const DrawerListTitle(
             title: "Account Settings",
             icon: "user",
@@ -190,7 +245,11 @@ class _HomeState extends State<Home> {
                   SizedBox(
                     width: 24,
                   ),
-                  HomeBtn(title: "Market", toScreen: "market"),
+                  HomeBtn(
+                    title: "Market",
+                    toScreen: "market",
+                    key: Key("btn"),
+                  ),
                 ],
               ),
               Row(
@@ -222,15 +281,17 @@ class _HomeState extends State<Home> {
                         (MediaQuery.of(context).size.height <= 600) ? 0 : 55,
                   ),
                   const Text(
-                    "Choose",
+                    textScaleFactor: 1,
+                    "Hi,",
                     style: TextStyle(
                         fontFamily: "harabaraBold",
                         fontSize: 44,
                         color: Colors.white),
                   ),
                   const Text(
+                    textScaleFactor: 1,
                     textAlign: TextAlign.center,
-                    "how you\nwant to shop ?",
+                    "Enjoy Shopping",
                     style: TextStyle(
                         fontFamily: "harabaraBold",
                         fontSize: 24,
@@ -244,5 +305,129 @@ class _HomeState extends State<Home> {
         ],
       ),
     );
+  }
+}
+
+class MyLoadingScreenToHome extends StatefulWidget {
+  final String title;
+  // ignore: prefer_const_constructors_in_immutables
+  MyLoadingScreenToHome({Key? key, required this.title}) : super(key: key);
+
+  @override
+  _MyLoadingScreenToHomeState createState() => _MyLoadingScreenToHomeState();
+}
+
+class _MyLoadingScreenToHomeState extends State<MyLoadingScreenToHome>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+  // fastuserInfo() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   final String? name = prefs.getString('userName');
+  //   final String? email = prefs.getString('userEmail');
+  //   setState(() {
+  //     userName = name!;
+  //     userEmail = email!;
+  //     labelName = name;
+  //   });
+  // }
+
+  getUseInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int? id = prefs.getInt('id');
+
+    GetHome data = await homeInfo(id!);
+    GetMsg msg = await userImg(id);
+    final response = await http.get(Uri.parse(
+        'https://smartcartapplback.azurewebsites.net/[CardController]/GetAllUserCard?userId=${id.toString()}'));
+    final response2 = await http.get(Uri.parse(
+        'https://smartcartapplback.azurewebsites.net/[InvoiceHistory]/GetInvoicesData?useId=${id.toString()}'));
+    setState(() {
+      userName = data.userName!;
+      userEmail = data.userEmail!;
+      labelName = data.userName!;
+      userId = id;
+      base = msg.message!;
+      cardList = json.decode(response.body);
+      invoicesList = json.decode(response2.body);
+    });
+  }
+
+  @override
+  void initState() {
+    if (widget.title != "Creating Account...") {
+      // fastuserInfo();
+      getUseInfo();
+    }
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+
+    // Create a curved animation
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+
+    // Start the animation
+    _animationController.forward();
+
+    // Wait for 1 second, then navigate to the new page
+    Future.delayed(const Duration(milliseconds: 800)).then((value) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Home(),
+        ),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            textScaleFactor: 1,
+            widget.title,
+            style: const TextStyle(
+              color: myDarkGreen,
+              fontFamily: "harabaraBold",
+              fontSize: 32.0,
+            ),
+          ),
+          const SizedBox(
+            height: 28,
+          ),
+          Center(
+            child: AnimatedBuilder(
+              animation: _animation,
+              builder: (context, child) {
+                return SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: CircularProgressIndicator(
+                    color: myDarkGreen,
+                    value: _animation.value,
+                    strokeWidth: 10,
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 }

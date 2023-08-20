@@ -220,6 +220,7 @@ class Checkout extends StatelessWidget {
                             width: 12.0,
                           ),
                           const Text(
+                            textScaleFactor: 1,
                             'Checkout',
                             style: TextStyle(
                               color: Colors.white,

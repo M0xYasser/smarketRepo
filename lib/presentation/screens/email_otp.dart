@@ -4,7 +4,7 @@ import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smarket_app/presentation/screens/reset_password.dart';
+import 'package:Smarket/presentation/screens/reset_password.dart';
 
 import '../../core/constants/constant.dart';
 import '../../data/models/get_home.dart';
@@ -50,11 +50,11 @@ class _EmailOTPState extends State<EmailOtp> {
         otpType: OTPType.digitsOnly);
     if (await myauth.sendOTP() == true) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("OTP has been sent"),
+        content: Text(textScaleFactor: 1, "OTP has been sent"),
       ));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Oops, OTP send failed"),
+        content: Text(textScaleFactor: 1, "Oops, OTP send failed"),
       ));
     }
   }
@@ -65,6 +65,9 @@ class _EmailOTPState extends State<EmailOtp> {
       close: true,
       closeScreen: "home",
       children: [
+        const SizedBox(
+          height: 72,
+        ),
         Image.asset(
           "assets/gifs/OTP.gif",
           height: 220,
@@ -73,6 +76,7 @@ class _EmailOTPState extends State<EmailOtp> {
           height: 24,
         ),
         const Text(
+          textScaleFactor: 1,
           "Email Verification",
           style: TextStyle(
               color: myDarkGreen, fontFamily: "harabaraBold", fontSize: 30),
@@ -104,46 +108,67 @@ class _EmailOTPState extends State<EmailOtp> {
           animationDuration: const Duration(milliseconds: 300),
           enableActiveFill: true,
           controller: widget.textEditingController,
-          onChanged: (value) {
+          onChanged: (value) async {
             pin = value;
+            if (await myauth.verifyOTP(otp: pin) == true) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text(textScaleFactor: 1, "OTP is verified"),
+              ));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ResetPassword(),
+                ),
+              );
+            } else {
+              if (pin.toString().length == 5) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text(textScaleFactor: 1, "Invalid OTP"),
+                ));
+              }
+            }
           },
         ),
         const SizedBox(
           height: 22,
         ),
-        GestureDetector(
-          onTap: () async {
-            if (await myauth.verifyOTP(otp: pin) == true) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("OTP is verified"),
-              ));
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ResetPassword(),
-                ),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("Invalid OTP"),
-              ));
-            }
-          },
-          child: Container(
-              width: 205,
-              padding: const EdgeInsets.fromLTRB(16, 9, 16, 9),
-              decoration: BoxDecoration(
-                  color: myDarkGreen, borderRadius: BorderRadius.circular(20)),
-              child: const Center(
-                child: Text(
-                  "Verify",
-                  style: TextStyle(
-                      fontFamily: "harabaraBold",
-                      fontSize: 20,
-                      color: Colors.white),
-                ),
-              )),
-        )
+        // GestureDetector(
+        //   onTap: () async {
+        //     print(await myauth.verifyOTP(otp: pin));
+        //     if (await myauth.verifyOTP(otp: pin) == true) {
+        //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        //         content:Text(
+        // textScaleFactor: 1,"OTP is verified"),
+        //       ));
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(
+        //           builder: (context) => ResetPassword(),
+        //         ),
+        //       );
+        //     } else {
+        //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        //         content:Text(
+        // textScaleFactor: 1,"Invalid OTP"),
+        //       ));
+        //     }
+        //   },
+        //   child: Container(
+        //       width: 205,
+        //       padding: const EdgeInsets.fromLTRB(16, 9, 16, 9),
+        //       decoration: BoxDecoration(
+        //           color: myDarkGreen, borderRadius: BorderRadius.circular(20)),
+        //       child: const Center(
+        //         child:Text(
+        // textScaleFactor: 1,
+        //           "Verify",
+        //           style: TextStyle(
+        //               fontFamily: "harabaraBold",
+        //               fontSize: 20,
+        //               color: Colors.white),
+        //         ),
+        //       )),
+        // )
       ],
     );
   }

@@ -1,12 +1,18 @@
+import 'package:Smarket/presentation/screens/invoices_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../core/constants/constant.dart';
 
-class InvoicesEmpty extends StatelessWidget {
+class InvoicesEmpty extends StatefulWidget {
   const InvoicesEmpty({super.key});
 
+  @override
+  State<InvoicesEmpty> createState() => _InvoicesEmptyState();
+}
+
+class _InvoicesEmptyState extends State<InvoicesEmpty> {
+  bool clicked = false;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
@@ -23,6 +29,7 @@ class InvoicesEmpty extends StatelessWidget {
             height: 24,
           ),
           const Text(
+            textScaleFactor: 1,
             "Not Found any invoice",
             style: TextStyle(
                 fontFamily: "harabaraBold", fontSize: 24, color: myDarkGreen),
@@ -30,40 +37,44 @@ class InvoicesEmpty extends StatelessWidget {
           const SizedBox(
             height: 24,
           ),
-          // ignore: prefer_const_constructors
-          Text(
-              textAlign: TextAlign.center,
-              "If you already have an account\nyou can login from signin button\nto retrieve your invoices\nregistered on your account",
-              style: const TextStyle(
-                  fontFamily: "harabaraBold",
-                  fontSize: 18,
-                  color: myLightGray)),
-          const SizedBox(
-            height: 24,
-          ),
-          GestureDetector(
+          Center(
             child: Container(
-                width: 100,
-                padding: const EdgeInsets.fromLTRB(16, 9, 16, 9),
-                decoration: BoxDecoration(
-                    color: myDarkGreen,
-                    borderRadius: BorderRadius.circular(20)),
-                child: Center(
-                    child: Row(
-                  children: [
-                    SvgPicture.asset("assets/icons/signin.svg"),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    const Text(
-                      "Signin",
-                      style: TextStyle(
-                          fontFamily: "harabaraBold",
-                          fontSize: 16,
-                          color: Colors.white),
-                    ),
-                  ],
-                ))),
+              height: 40,
+              width: 170,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: const Color(0xff2c6976),
+              ),
+              child: MaterialButton(
+                  onPressed: () {
+                    setState(() {
+                      clicked = true;
+                    });
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const InvoicesScreen(),
+                    ));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: clicked
+                        ? const SizedBox(
+                            height: 30,
+                            width: 30,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text(
+                            textScaleFactor: 1,
+                            'ReLoad...',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "harabaraBold",
+                              fontSize: 20.0,
+                            ),
+                          ),
+                  )),
+            ),
           ),
         ],
       ),

@@ -2,10 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:smarket_app/presentation/screens/account_setting.dart';
-import 'package:smarket_app/presentation/screens/support.dart';
-import 'package:smarket_app/presentation/widgets/logout_pop.dart';
-
+import 'package:Smarket/presentation/screens/progress.dart';
+import 'package:Smarket/presentation/screens/support.dart';
+import 'package:Smarket/presentation/widgets/logout_pop.dart';
 import '../../core/constants/constant.dart';
 import '../screens/about.dart';
 import '../screens/billingtscreen.dart';
@@ -35,11 +34,13 @@ class DrawerListTitle extends StatelessWidget {
                       : (toScreen == "support")
                           ? const Support()
                           : (toScreen == "setting")
-                              ? AccountSetting()
+                              ? const MyLoadingScreen()
                               : const BillingScreen(),
                 ))),
           leading: SvgPicture.asset("assets/icons/$icon.svg"),
-          title: Text(title,
+          title: Text(
+              textScaleFactor: 1,
+              title,
               style: const TextStyle(
                   fontFamily: "harabaraBold",
                   fontSize: 18,

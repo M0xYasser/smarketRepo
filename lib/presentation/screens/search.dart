@@ -16,6 +16,7 @@ class SearchScreanState extends State<SearchScrean> {
       appBar: AppBar(
         toolbarHeight: 76,
         title: const Text(
+          textScaleFactor: 1,
           "Search A Product",
           style: TextStyle(
             color: Color(0xff444444),
@@ -69,6 +70,7 @@ class SearchScreanState extends State<SearchScrean> {
                         width: 10,
                       ),
                       Text(
+                        textScaleFactor: 1,
                         ("Search"),
                         style: TextStyle(
                             fontFamily: "harabaraBold",
@@ -125,6 +127,7 @@ class SearchScreanState extends State<SearchScrean> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: const [
                                 Text(
+                                  textScaleFactor: 1,
                                   "Milk",
                                   style: TextStyle(
                                     fontFamily: "harabaraBold",
@@ -135,6 +138,7 @@ class SearchScreanState extends State<SearchScrean> {
                                   height: 5,
                                 ),
                                 Text(
+                                  textScaleFactor: 1,
                                   "1.5 L",
                                   style: TextStyle(
                                     fontFamily: "harabaraBold",
@@ -146,6 +150,7 @@ class SearchScreanState extends State<SearchScrean> {
                                   height: 5,
                                 ),
                                 Text(
+                                  textScaleFactor: 1,
                                   "18 L.E",
                                   style: TextStyle(
                                     fontFamily: "harabaraBold",
@@ -161,6 +166,7 @@ class SearchScreanState extends State<SearchScrean> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: const [
                               Text(
+                                textScaleFactor: 1,
                                 "x1",
                                 style: TextStyle(
                                   fontFamily: "harabaraBold",
@@ -209,6 +215,7 @@ class SearchScreanState extends State<SearchScrean> {
               Padding(
                 padding: EdgeInsets.only(left: 40),
                 child: Text(
+                  textScaleFactor: 1,
                   "Location:",
                   style: TextStyle(
                     fontFamily: "harabaraBold",
@@ -218,6 +225,7 @@ class SearchScreanState extends State<SearchScrean> {
               ),
               Center(
                 child: Text(
+                  textScaleFactor: 1,
                   "3A-2F",
                   style: TextStyle(
                     fontFamily: "harabaraBold",
@@ -254,6 +262,7 @@ class SearchScreanState extends State<SearchScrean> {
                           width: 8,
                         ),
                         const Text(
+                          textScaleFactor: 1,
                           "Show Map",
                           style: TextStyle(
                             fontFamily: "harabaraBold",

@@ -23,7 +23,7 @@ class PdfInvoiceApi {
       ],
       footer: (context) => buildFooter(invoice),
     ));
-    // TODO : CHANGE NAME OF PDF TO TIME NOW
+
     return PdfApi.saveDocument(name: 'my_invoice.pdf', pdf: pdf);
   }
 
@@ -60,8 +60,11 @@ class PdfInvoiceApi {
   static Widget buildCustomerAddress(Customer customer) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(customer.name, style: TextStyle(fontWeight: FontWeight.bold)),
-          Text(customer.email),
+          Text(
+              textScaleFactor: 1,
+              customer.name,
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(textScaleFactor: 1, customer.email),
         ],
       );
 
@@ -94,9 +97,12 @@ class PdfInvoiceApi {
   static Widget buildSupplierAddress(Supplier supplier) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(supplier.name, style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(
+              textScaleFactor: 1,
+              supplier.name,
+              style: TextStyle(fontWeight: FontWeight.bold)),
           SizedBox(height: 1 * PdfPageFormat.mm),
-          Text(supplier.address),
+          Text(textScaleFactor: 1, supplier.address),
         ],
       );
 
@@ -104,6 +110,7 @@ class PdfInvoiceApi {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
+            textScaleFactor: 1,
             'INVOICE',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
@@ -112,23 +119,15 @@ class PdfInvoiceApi {
       );
 
   static Widget buildInvoice(Invoice invoice) {
-    final headers = [
-      'Name',
-      'Detail',
-      'Size',
-      'Quantity',
-      'Unit Price',
-      'Total'
-    ];
+    final headers = ['Name', 'Detail', 'Quantity', 'Unit Price', 'Total'];
     final data = invoice.products.map((item) {
-      final total = item.unitPrice * item.quantity;
+      final total = item.unitPrice;
 
       return [
         item.name,
         item.detail,
-        item.size,
         '${item.quantity}',
-        '\$ ${item.unitPrice}',
+        '\$ ${item.unitPrice / item.quantity}',
         '\$ ${total.toStringAsFixed(2)}',
       ];
     }).toList();
@@ -153,7 +152,7 @@ class PdfInvoiceApi {
 
   static Widget buildTotal(Invoice invoice) {
     final netTotal = invoice.products
-        .map((item) => item.unitPrice * item.quantity)
+        .map((item) => item.unitPrice)
         .reduce((item1, item2) => item1 + item2);
 
     final total = netTotal;
@@ -215,9 +214,9 @@ class PdfInvoiceApi {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: pw.CrossAxisAlignment.end,
       children: [
-        Text(title, style: style),
+        Text(textScaleFactor: 1, title, style: style),
         SizedBox(width: 2 * PdfPageFormat.mm),
-        Text(value),
+        Text(textScaleFactor: 1, value),
       ],
     );
   }
@@ -235,8 +234,8 @@ class PdfInvoiceApi {
       width: width,
       child: Row(
         children: [
-          Expanded(child: Text(title, style: style)),
-          Text(value, style: unite ? style : null),
+          Expanded(child: Text(textScaleFactor: 1, title, style: style)),
+          Text(textScaleFactor: 1, value, style: unite ? style : null),
         ],
       ),
     );

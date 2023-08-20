@@ -74,6 +74,7 @@ class Support extends StatelessWidget {
                             borderRadius: BorderRadius.circular(20)),
                         child: const Center(
                           child: Text(
+                            textScaleFactor: 1,
                             "Send Message",
                             style: TextStyle(
                                 fontFamily: "harabaraBold",

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smarket_app/data/repository/put_account_settings_repo.dart';
+import 'package:Smarket/data/repository/put_account_settings_repo.dart';
 import '../widgets/label.dart';
 
 import '../../core/constants/constant.dart';
@@ -9,13 +9,14 @@ import '../widgets/background.dart';
 import 'homeScreen.dart';
 
 class ResetPassword extends StatefulWidget {
-  ResetPassword({super.key});
-  final newPassword = TextEditingController();
-  final rePassword = TextEditingController();
+  const ResetPassword({super.key});
 
   @override
   State<ResetPassword> createState() => _ResetPasswordState();
 }
+
+final newPassword = TextEditingController();
+final rePassword = TextEditingController();
 
 class _ResetPasswordState extends State<ResetPassword> {
   int userId = 0;
@@ -36,6 +37,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   bool pass1 = true;
   bool pass2 = true;
+  bool clicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +55,7 @@ class _ResetPasswordState extends State<ResetPassword> {
           height: 48,
         ),
         const Text(
+          textScaleFactor: 1,
           "Reset Your Password",
           style: TextStyle(
               color: myDarkGreen, fontFamily: "harabaraBold", fontSize: 30),
@@ -75,7 +78,7 @@ class _ResetPasswordState extends State<ResetPassword> {
           obscureText: pass1,
           labelText: "New Password",
           icon: "lock",
-          controller: widget.newPassword,
+          controller: newPassword,
           height: 48,
           width: 280,
           keyboardType: TextInputType.visiblePassword,
@@ -98,7 +101,7 @@ class _ResetPasswordState extends State<ResetPassword> {
           obscureText: pass2,
           labelText: "Re Password",
           icon: "reset",
-          controller: widget.rePassword,
+          controller: rePassword,
           height: 48,
           width: 280,
           keyboardType: TextInputType.visiblePassword,
@@ -108,14 +111,18 @@ class _ResetPasswordState extends State<ResetPassword> {
         ),
         GestureDetector(
           onTap: () {
-            if (widget.rePassword.text == widget.newPassword.text) {
-              putPassword(userId, widget.newPassword.text.toString());
+            setState(() {
+              clicked = true;
+            });
+            if (rePassword.text == newPassword.text) {
+              putPassword(userId, newPassword.text.toString());
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => const Home(),
               ));
             } else {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("Oops, Password does not match"),
+                content:
+                    Text(textScaleFactor: 1, "Oops, Password does not match"),
               ));
             }
           },
@@ -125,21 +132,30 @@ class _ResetPasswordState extends State<ResetPassword> {
               decoration: BoxDecoration(
                   color: myDarkGreen, borderRadius: BorderRadius.circular(20)),
               child: Center(
-                  child: Row(
-                children: [
-                  SvgPicture.asset("assets/icons/reset_white.svg"),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  const Text(
-                    "Reset Password",
-                    style: TextStyle(
-                        fontFamily: "harabaraBold",
-                        fontSize: 20,
-                        color: Colors.white),
-                  ),
-                ],
-              ))),
+                  child: clicked
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        )
+                      : Row(
+                          children: [
+                            SvgPicture.asset("assets/icons/reset_white.svg"),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            const Text(
+                              textScaleFactor: 1,
+                              "Reset Password",
+                              style: TextStyle(
+                                  fontFamily: "harabaraBold",
+                                  fontSize: 20,
+                                  color: Colors.white),
+                            ),
+                          ],
+                        ))),
         )
       ],
     );

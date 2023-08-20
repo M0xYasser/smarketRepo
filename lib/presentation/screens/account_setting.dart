@@ -1,17 +1,17 @@
-// ignore_for_file: must_be_immutable, avoid_types_as_parameter_names, non_constant_identifier_names
+// ignore_for_file: must_be_immutable, avoid_types_as_parameter_names, non_constant_identifier_names, use_build_context_synchronously
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smarket_app/core/constants/constant.dart';
-import 'package:smarket_app/presentation/widgets/customAppBar.dart';
+import 'package:Smarket/core/constants/constant.dart';
+import 'package:Smarket/presentation/screens/homeScreen.dart';
+import 'package:Smarket/presentation/widgets/customAppBar.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/controller/account_setting_controller.dart';
-import '../../data/models/get_home.dart';
-import '../../data/repository/get_home.dart';
+import '../../data/repository/post_pic.dart';
 import '../../data/repository/put_account_settings_repo.dart';
 import 'email_otp.dart';
 
@@ -44,49 +44,15 @@ class _AccountSettingState extends State<AccountSetting> {
   bool isDisableBtn = true;
   Color buttonColor = Colors.grey;
   Color txtColor = Colors.grey;
+
   TextEditingController controller = TextEditingController();
 
   final namecontroller = TextEditingController(text: "Your initial value");
-  String userName = "";
-  String userEmail = "";
-  String labelName = "";
-  int userId = 0;
-
-  getUserName() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final int? id = prefs.getInt('id');
-    GetHome data = await homeInfo(id!);
-
-    setState(() {
-      userName = data.userName!;
-      userEmail = data.userEmail!;
-      labelName = userName;
-      userId = id;
-    });
-  }
 
   @override
   void initState() {
-    getUserName();
-
     super.initState();
   }
-
-  // final picker = ImagePicker();
-
-  // XFile? _image;
-
-  // XFile? get image => _image;
-
-  // Future pickGalleryImage(BuildContext context) async {
-  //   final PickedFile =
-  //       await picker.pickImage(source: ImageSource.gallery, imageQuality: 100);
-
-  //   if (PickedFile != null) {
-  //     _image = XFile(PickedFile.path);
-  //     //notifyListeners();
-  //   }
-  // }
 
   final ImagePicker _picker = ImagePicker();
   File? selectedImage;
@@ -94,8 +60,12 @@ class _AccountSettingState extends State<AccountSetting> {
     final XFile? image = await _picker.pickImage(source: source);
     if (image != null) {
       selectedImage = File(image.path);
+      postPicture(userId.toString(), selectedImage!);
       setState(() {});
     }
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (context) => const Home(),
+    ));
   }
 
   @override
@@ -114,35 +84,18 @@ class _AccountSettingState extends State<AccountSetting> {
                 child: Center(
                   child: Stack(
                     children: [
-                      // Obx(() => CircleAvatar(
-
-                      //   // ignore: unnecessary_null_comparison
-                      //   backgroundImage: _image == null ? null : FileImage(_image!),
-
-                      //   backgroundColor: Colors.white,
-                      //   radius: 55,
-                      // )),
-
-                      selectedImage == null
-                          ? Container(
-                              width: 100,
-                              height: 100,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: AssetImage('assets/images/person.png'),
-                                ),
-                              ),
+                      !base.contains("issues")
+                          ? CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 50,
+                              backgroundImage:
+                                  Image.memory(base64Decode(base)).image,
                             )
-                          : Container(
-                              width: 100,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: FileImage(selectedImage!))),
+                          : const CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 50,
+                              backgroundImage:
+                                  AssetImage('assets/images/person.png'),
                             ),
                       Positioned(
                           bottom: 5,
@@ -370,6 +323,7 @@ class _AccountSettingState extends State<AccountSetting> {
                             // const Color(0xff2C6976), // Text Color
                             // ),
                             // child: const Text(
+                            // textScaleFactor: 1,
                             // 'Reset Password',
                             // style: TextStyle(
                             // fontFamily: "harabaraBold",
@@ -411,6 +365,7 @@ class _AccountSettingState extends State<AccountSetting> {
                           foregroundColor: const Color(0xff2C6976), // Te
                         ),
                         child: const Text(
+                          textScaleFactor: 1,
                           'Reset Password',
                           style: TextStyle(
                             fontFamily: "harabaraBold",
@@ -497,8 +452,13 @@ class _AccountSettingState extends State<AccountSetting> {
                   child: MaterialButton(
                       onPressed: (isDisableBtn)
                           ? null
-                          : () {
+                          : () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              await prefs.setString(
+                                  'userName', nameController.text);
                               putName(userId, nameController.text);
+
                               setState(() {
                                 isDisableBtn = true;
                                 isEditing = true;
@@ -508,6 +468,7 @@ class _AccountSettingState extends State<AccountSetting> {
                             },
                       height: 50.0,
                       child: Text(
+                        textScaleFactor: 1,
                         'Save',
                         style: TextStyle(
                           color: (isDisableBtn) ? Colors.white54 : Colors.white,
@@ -533,6 +494,7 @@ class _AccountSettingState extends State<AccountSetting> {
       child: Column(
         children: [
           const Text(
+                            textScaleFactor: 1,
             "Choose Profile Photo",
             style: TextStyle(
                 fontSize: 20,
@@ -559,7 +521,8 @@ class _AccountSettingState extends State<AccountSetting> {
                     const SizedBox(
                       height: 8,
                     ),
-                    Text(
+                   Text(
+                            textScaleFactor: 1,
                       "Gallary",
                       style: TextStyle(
                           fontSize: 20,
@@ -587,7 +550,8 @@ class _AccountSettingState extends State<AccountSetting> {
                     const SizedBox(
                       height: 8,
                     ),
-                    Text(
+                   Text(
+                            textScaleFactor: 1,
                       "Camera",
                       style: TextStyle(
                           fontSize: 20,

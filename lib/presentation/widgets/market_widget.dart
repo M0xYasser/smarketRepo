@@ -41,6 +41,7 @@ class MarketWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
+                            textScaleFactor: 1,
                             productName,
                             style: const TextStyle(
                               fontFamily: "harabaraBold",
@@ -51,6 +52,7 @@ class MarketWidget extends StatelessWidget {
                             height: 5,
                           ),
                           Text(
+                            textScaleFactor: 1,
                             size,
                             style: const TextStyle(
                               fontFamily: "harabaraBold",
@@ -61,13 +63,52 @@ class MarketWidget extends StatelessWidget {
                           const SizedBox(
                             height: 5,
                           ),
-                          Text(
-                            "$price L.E",
-                            style: const TextStyle(
-                              fontFamily: "harabaraBold",
-                              fontSize: 12,
-                            ),
-                          ),
+                          //TODO
+                          (pic == "7" && (int.parse(quantity) / 3).floor() >= 1)
+                              ? Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal:
+                                              8), // this line is optional to make strikethrough effect outside a text
+                                      decoration: const BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                                'assets/images/line.png'),
+                                            fit: BoxFit.contain),
+                                      ),
+                                      child: Text(
+                                        textScaleFactor: 1,
+                                        "$price L.E",
+                                        style: const TextStyle(
+                                          color:
+                                              Color.fromARGB(255, 170, 46, 38),
+                                          fontFamily: "harabaraBold",
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text(
+                                      textScaleFactor: 1,
+                                      "${int.parse(price) - (int.parse(quantity) / 3).floor()} L.E",
+                                      style: const TextStyle(
+                                        fontFamily: "harabaraBold",
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  textScaleFactor: 1,
+                                  "$price L.E",
+                                  style: const TextStyle(
+                                    fontFamily: "harabaraBold",
+                                    fontSize: 12,
+                                  ),
+                                )
                         ],
                       ),
                     ],
@@ -77,6 +118,7 @@ class MarketWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
+                          textScaleFactor: 1,
                           "x$quantity",
                           style: const TextStyle(
                             fontFamily: "harabaraBold",
@@ -101,10 +143,10 @@ class MarketWidget extends StatelessWidget {
                   const SizedBox(
                     width: 24,
                   ),
-                  Image.network(
-                    pic,
-                    height: 80,
-                    width: 70,
+                  Image.asset(
+                    "assets/products/$pic.png",
+                    height: 60,
+                    width: 80,
                   ),
                 ],
               ),

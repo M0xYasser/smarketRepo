@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smarket_app/presentation/screens/sign_in.dart';
+import 'package:Smarket/presentation/screens/sign_in.dart';
 import '../../core/constants/constant.dart';
+import '../screens/cart_produt.dart';
+import '../screens/homeScreen.dart';
 
 Future<void> logOut() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   await prefs.setInt('isSign', 0);
+}
+
+Future<void> saveUserCredentials() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  await prefs.setInt('id', 0);
+  await prefs.setString('userName', "");
+  await prefs.setString('userEmail', "");
 }
 
 Future openDialog(BuildContext context) => showDialog(
@@ -35,7 +45,8 @@ Future openDialog(BuildContext context) => showDialog(
                     width: 8,
                   ),
                   const Text(
-                    "Signout",
+                    textScaleFactor: 1,
+                    "SignOut",
                     style: TextStyle(
                         fontFamily: "harabaraBold",
                         fontSize: 18,
@@ -44,7 +55,8 @@ Future openDialog(BuildContext context) => showDialog(
                 ],
               ),
               const Text(
-                "Are you sure want to logout ?",
+                textScaleFactor: 1,
+                "Are you sure want to SignOut ?",
                 style: TextStyle(
                     fontFamily: "harabara",
                     fontSize: 16,
@@ -65,6 +77,7 @@ Future openDialog(BuildContext context) => showDialog(
                           color: Colors.white),
                       child: const Center(
                         child: Text(
+                          textScaleFactor: 1,
                           "Cancel",
                           style: TextStyle(
                               fontFamily: "harabaraBold",
@@ -75,9 +88,21 @@ Future openDialog(BuildContext context) => showDialog(
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       Navigator.of(context, rootNavigator: true).pop('dialog');
                       logOut();
+                      // saveUserCredentials();
+                      cardList.clear();
+                      productList.clear();
+                      invoicesList.clear();
+                      userName = " ";
+                      userEmail = " ";
+                      userId = 0;
+                      base = "";
+                      labelName = "";
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      await prefs.clear();
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (context) => const SignIn(),
                       ));
@@ -90,7 +115,8 @@ Future openDialog(BuildContext context) => showDialog(
                           color: myDarkGreen),
                       child: const Center(
                         child: Text(
-                          "Logout",
+                          textScaleFactor: 1,
+                          "SignOut",
                           style: TextStyle(
                               fontFamily: "harabaraBold",
                               fontSize: 16,

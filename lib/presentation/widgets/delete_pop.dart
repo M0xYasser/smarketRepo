@@ -28,6 +28,7 @@ Future openDialog(BuildContext context) => showDialog(
                     width: 8,
                   ),
                   const Text(
+                    textScaleFactor: 1,
                     "Signout",
                     style: TextStyle(
                         fontFamily: "harabaraBold",
@@ -37,6 +38,7 @@ Future openDialog(BuildContext context) => showDialog(
                 ],
               ),
               const Text(
+                textScaleFactor: 1,
                 "Are you sure want to logout ?",
                 style: TextStyle(
                     fontFamily: "harabara",
@@ -57,6 +59,7 @@ Future openDialog(BuildContext context) => showDialog(
                           color: Colors.white),
                       child: const Center(
                         child: Text(
+                          textScaleFactor: 1,
                           "Cancel",
                           style: TextStyle(
                               fontFamily: "harabaraBold",
@@ -77,6 +80,7 @@ Future openDialog(BuildContext context) => showDialog(
                           color: myDarkGreen),
                       child: const Center(
                         child: Text(
+                          textScaleFactor: 1,
                           "Logout",
                           style: TextStyle(
                               fontFamily: "harabaraBold",

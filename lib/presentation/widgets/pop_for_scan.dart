@@ -19,6 +19,7 @@ class PopScreenState extends State<PopScreen> {
               borderRadius: BorderRadius.circular(20.0),
             ),
             title: const Text(
+              textScaleFactor: 1,
               "Select Cart",
               style: TextStyle(
                 fontFamily: "harabaraBold",
@@ -31,6 +32,7 @@ class PopScreenState extends State<PopScreen> {
               child: Column(
                 children: <Widget>[
                   const Text(
+                    textScaleFactor: 1,
                     "Scan with your phone’s camera to select the cart.",
                     style: TextStyle(
                       fontFamily: "harabara",
@@ -76,6 +78,7 @@ class PopScreenState extends State<PopScreen> {
                                 width: 8,
                               ),
                               const Text(
+                                textScaleFactor: 1,
                                 "Scan Now",
                                 style: TextStyle(
                                   fontFamily: "harabaraBold",
@@ -113,6 +116,7 @@ class PopScreenState extends State<PopScreen> {
             ),
             const Center(
               child: Text(
+                textScaleFactor: 1,
                 "Home Screeen",
                 style: TextStyle(
                     fontSize: 40,
@@ -136,6 +140,7 @@ class PopScreenState extends State<PopScreen> {
                     openPop();
                   },
                   child: const Text(
+                    textScaleFactor: 1,
                     "Market",
                     style: TextStyle(
                       fontFamily: "harabaraBold",

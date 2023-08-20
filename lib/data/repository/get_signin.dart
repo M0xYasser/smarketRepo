@@ -6,6 +6,6 @@ import '../models/get_info.dart';
 
 Future<GetInfo> signin(String email, String password) async {
   final response = await http.get(Uri.parse(
-      'https://smartcartapplication.azurewebsites.net/[SignInController]/SignIn?email=$email&password=$password'));
+      'https://smartcartapplback.azurewebsites.net/[SignInController]/SignIn?email=$email&password=$password'));
   return GetInfo.fromJson(jsonDecode(response.body));
 }

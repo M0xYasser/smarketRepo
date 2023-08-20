@@ -30,14 +30,12 @@ class InvoiceInfo {
 class InvoiceProduct {
   final String name;
   final String detail;
-  final String size;
   final int quantity;
   final double unitPrice;
 
   const InvoiceProduct({
     required this.name,
     required this.detail,
-    required this.size,
     required this.quantity,
     required this.unitPrice,
   });
